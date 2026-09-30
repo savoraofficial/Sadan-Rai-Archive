@@ -1,0 +1,5 @@
+# Technical robots.txt for Sadan Rai Digital Archive
+User-agent: *
+Allow: /
+
+Sitemap: https://sadanrai.com/sitemap.xml
