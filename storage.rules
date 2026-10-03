@@ -1,0 +1,53 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'raiktosadan@gmail.com';
+    }
+
+    // Original archive masters and private evidence are owner-only.
+    match /archive-masters/{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // Contact attachments may be submitted publicly, but only the owner can read/delete them.
+    match /contact-submissions/{fileName} {
+      allow create: if fileName.matches('[A-Za-z0-9._-]{1,180}')
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp|gif)|application/pdf|application/msword|application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+      allow read, delete: if isAdmin();
+    }
+
+
+    // Published visual/audio archive files are publicly readable; only the owner can upload or replace them.
+    match /archive/photos/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+      allow delete: if isAdmin();
+    }
+    match /archive/videos/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && request.resource.size < 100 * 1024 * 1024
+        && request.resource.contentType.matches('video/(mp4|webm|quicktime)');
+      allow delete: if isAdmin();
+    }
+
+    // Research evidence attachments are owner-controlled. The Firestore research record
+    // decides what may be published; the raw archive files remain protected by default.
+    match /archive/research/{allPaths=**} {
+      allow read: if isAdmin();
+      allow write: if isAdmin()
+        && request.resource.size < 50 * 1024 * 1024
+        && request.resource.contentType.matches('application/pdf|image/(jpeg|png|webp)|audio/(mpeg|wav|mp4)|video/(mp4|webm)');
+      allow delete: if isAdmin();
+    }
+
+    // No other storage path is public by default.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

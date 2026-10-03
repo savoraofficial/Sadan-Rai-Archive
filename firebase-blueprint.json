@@ -1,0 +1,174 @@
+{
+  "entities": {
+    "ResearchRecord": {
+      "title": "ResearchRecord",
+      "description": "Comprehensive historical and cultural research record",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "nepaliTitle": { "type": "string" },
+        "englishTitle": { "type": "string" },
+        "category": { "type": "string" },
+        "community": { "type": "string" },
+        "topic": { "type": "string" },
+        "author": { "type": "string" },
+        "publication": { "type": "string" },
+        "publicationYear": { "type": "string" },
+        "sourceUrl": { "type": "string" },
+        "pageNumber": { "type": "string" },
+        "chapterSection": { "type": "string" },
+        "originalQuotation": { "type": "string" },
+        "nepaliTranslation": { "type": "string" },
+        "englishTranslation": { "type": "string" },
+        "nepaliExplanation": { "type": "string" },
+        "englishExplanation": { "type": "string" },
+        "evidence": { "type": "string" },
+        "evidenceType": { "type": "string" },
+        "otherAuthorsViews": { "type": "string" },
+        "conflictingViews": { "type": "string" },
+        "oralHistory": { "type": "string" },
+        "researchConclusion": { "type": "string" },
+        "researchStatus": { "type": "string", "enum": ["verified", "oral_history", "further_research"] },
+        "location": { "type": "string" },
+        "date": { "type": "string" },
+        "mediaAttachments": { "type": "string" },
+        "rightsStatus": { "type": "string" },
+        "notes": { "type": "string" },
+        "synthesisDocumented": { "type": "string" },
+        "synthesisScholarly": { "type": "string" },
+        "synthesisOral": { "type": "string" },
+        "synthesisDisputed": { "type": "string" },
+        "synthesisFurtherResearch": { "type": "string" },
+        "workflowStatus": { "type": "string", "enum": ["draft", "under_review", "published", "archived"] },
+        "version": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["title", "category", "researchStatus", "workflowStatus"]
+    },
+    "AuthorPerspective": {
+      "title": "AuthorPerspective",
+      "description": "Comparative scholarly perspective entry",
+      "type": "object",
+      "properties": {
+        "topic": { "type": "string" },
+        "authorName": { "type": "string" },
+        "authorNameNepali": { "type": "string" },
+        "bookTitle": { "type": "string" },
+        "publicationYear": { "type": "string" },
+        "page": { "type": "string" },
+        "whatAuthorWrote": { "type": "string" },
+        "originalQuotation": { "type": "string" },
+        "nepaliTranslation": { "type": "string" },
+        "englishTranslation": { "type": "string" },
+        "sourceUrl": { "type": "string" },
+        "evidenceUsed": { "type": "string" },
+        "localInformants": { "type": "string" },
+        "isDirectObservation": { "type": "boolean" },
+        "otherAuthorsViews": { "type": "string" },
+        "differences": { "type": "string" },
+        "researchStatus": { "type": "string", "enum": ["verified", "oral_history", "further_research"] },
+        "workflowStatus": { "type": "string", "enum": ["draft", "under_review", "published", "archived"] },
+        "rightsStatus": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["topic", "authorName", "bookTitle", "researchStatus", "workflowStatus"]
+    },
+    "EvidenceItem": {
+      "title": "EvidenceItem",
+      "description": "Historical, archaeological, and archival evidence records",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "nepaliTitle": { "type": "string" },
+        "type": { "type": "string" },
+        "datePeriod": { "type": "string" },
+        "location": { "type": "string" },
+        "description": { "type": "string" },
+        "originalSource": { "type": "string" },
+        "reference": { "type": "string" },
+        "mediaUrl": { "type": "string" },
+        "rights": { "type": "string" },
+        "verificationStatus": { "type": "string", "enum": ["verified", "oral_history", "further_research"] },
+        "workflowStatus": { "type": "string", "enum": ["draft", "under_review", "published", "archived"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["title", "type", "verificationStatus", "workflowStatus"]
+    },
+    "SourceItem": {
+      "title": "SourceItem",
+      "description": "Archival bibliography source item",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "year": { "type": "string" },
+        "publicationOrArchive": { "type": "string" },
+        "category": { "type": "string" },
+        "isDocumentaryEvidence": { "type": "boolean" },
+        "url": { "type": "string" },
+        "quotationOrNote": { "type": "string" },
+        "workflowStatus": { "type": "string" }
+      },
+      "required": ["title", "author"]
+    },
+    "RevisionRecord": {
+      "title": "RevisionRecord",
+      "description": "Audit trail tracking changes to research records",
+      "type": "object",
+      "properties": {
+        "targetId": { "type": "string" },
+        "targetType": { "type": "string" },
+        "version": { "type": "number" },
+        "author": { "type": "string" },
+        "authorEmail": { "type": "string" },
+        "changeNotes": { "type": "string" },
+        "snapshotData": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["targetId", "version", "createdAt"]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Authorized administrator user profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "superadmin"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/research_records/{recordId}": {
+      "schema": { "$ref": "#/entities/ResearchRecord" },
+      "description": "Collection of all structured research records"
+    },
+    "/authors_perspectives/{perspectiveId}": {
+      "schema": { "$ref": "#/entities/AuthorPerspective" },
+      "description": "Historical texts and scholarly perspectives collection"
+    },
+    "/evidence_records/{evidenceId}": {
+      "schema": { "$ref": "#/entities/EvidenceItem" },
+      "description": "Physical, documentary, and archaeological evidence items"
+    },
+    "/sources/{sourceId}": {
+      "schema": { "$ref": "#/entities/SourceItem" },
+      "description": "Bibliographic references and sources collection"
+    },
+    "/revisions/{revisionId}": {
+      "schema": { "$ref": "#/entities/RevisionRecord" },
+      "description": "Revision history audit trail"
+    },
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminUser" },
+      "description": "Authorized administrator profiles"
+    }
+  }
+}
