@@ -1,3 +1,9 @@
+## Research cut-off and publication rule — 3 October 2026
+
+The current public research layer represents work completed and sufficiently cross-checked up to 3 October 2026. Only records with current status `verified` are published. Records needing further evidence or field research remain unpublished working records.
+
+Future village visits, interviews and local evidence will be added as new versioned research records without deleting the existing record.
+
 # MASTER RESEARCH INDEX — 2026-10-03
 
 ## Preservation rule

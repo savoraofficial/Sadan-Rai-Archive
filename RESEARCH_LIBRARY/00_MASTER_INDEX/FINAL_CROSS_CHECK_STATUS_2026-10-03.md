@@ -1,20 +1,22 @@
-# Final Cross-Check Status — 2026-10-03
+# Final Cross-Check Status — 3 October 2026
 
-## What is complete
-- Existing 45-record Kirat World source registry preserved.
-- Existing evidence manifest and cross-check matrix preserved.
-- Today's British Library catalogue discoveries preserved in the existing TODAY_SEARCH_DISCOVERIES file.
-- Documenta Nepalica Pallo Kirāta, Majha Kirāta and RRC appeal records preserved.
-- Hamilton 1819 evidence extract preserved.
-- Yalambar conclusion separated from Kirat-wide documentary evidence.
-- Rights/reuse distinctions preserved.
+## Publication decision
+Only research records that passed the current evidence/source cross-check and are marked `verified` are included in the published research snapshot.
 
-## What is NOT claimed
+## Current verified publication layer
+- 8 records are published at v1.0 as of 3 October 2026.
+- Each record retains its source, evidence target, assessment, limitations and further-research notes.
+
+## Not published as verified
+- 4 prepared records currently require further research and therefore remain outside the published verified layer.
+- Exact page/folio extraction, stronger independent comparison, or field/local verification is not silently treated as complete.
+
+## Continuing research
+Future village-level fieldwork and oral-history research will use the same Master Structure. New evidence receives its own source/evidence record and version; existing records are not deleted merely because new evidence is found.
+
+## Evidence discipline
 - Catalogue identification is not the same as claim-level proof.
 - Digitisation is not the same as permission to redistribute.
 - Bibliographic identification is not page-level verification.
 - Chronicle tradition is not automatically contemporary proof.
-- Oral testimony is not automatically historical fact.
-
-## Continue research
-Future books, archival folios, field interviews, village records, photographs, audio, video, inscriptions and archaeological observations are added to the same structure and given a new record/version ID. Existing evidence is not deleted.
+- Oral testimony is documented as oral history and is not automatically treated as historical fact.

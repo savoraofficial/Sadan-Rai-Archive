@@ -21,6 +21,7 @@ import {
 } from '../../data/archiveData';
 import { 
   fetchResearchRecords, 
+  saveResearchRecord,
   deleteResearchRecord,
   fetchAuthorsPerspectives,
   fetchEvidenceRecords,
@@ -31,6 +32,8 @@ import {
 import { auth, storage } from '../../firebase';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { adminText } from '../../data/adminTranslations';
+import { PREPARED_PUBLISHED_RESEARCH } from '../../data/preparedPublishedResearch';
+import { ADMIN_RESEARCH_LIBRARY_DOCUMENTS } from '../../data/adminResearchLibrary';
 import { signOut, onAuthStateChanged, User } from 'firebase/auth';
 import { useBilingualAutoTranslate } from '../../hooks/useBilingualAutoTranslate';
 import { useAdminTypingFocusGuard } from '../../hooks/useAdminTypingFocusGuard';
@@ -76,6 +79,7 @@ import {
 
 type AdminTab = 
   | 'research'
+  | 'library'
   | 'sources'
   | 'authors'
   | 'evidence'
@@ -137,6 +141,9 @@ export const AdminPortalView: React.FC = () => {
   const [activeTab, setActiveTab] = useState<AdminTab>('research');
   const [activeForm, setActiveForm] = useState<ActiveForm>(null);
   const [editingResearchItem, setEditingResearchItem] = useState<ResearchRecordItem | null>(null);
+  const [readingResearchItem, setReadingResearchItem] = useState<ResearchRecordItem | null>(null);
+  const [libraryQuery, setLibraryQuery] = useState('');
+  const [selectedLibraryPath, setSelectedLibraryPath] = useState<string>(ADMIN_RESEARCH_LIBRARY_DOCUMENTS[0]?.path || '');
   const [editingAuthorItem, setEditingAuthorItem] = useState<AuthorPerspectiveItem | null>(null);
   const [editingEvidenceItem, setEditingEvidenceItem] = useState<EvidenceRecordItem | null>(null);
   const [editingOralHistoryItem, setEditingOralHistoryItem] = useState<OralHistoryRecordItem | null>(null);
@@ -150,6 +157,7 @@ export const AdminPortalView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
+  const [publishingPreparedResearch, setPublishingPreparedResearch] = useState(false);
 
   // New Article inline fields
   const [newArtTitle, setNewArtTitle] = useState('');
@@ -238,7 +246,13 @@ export const AdminPortalView: React.FC = () => {
         fetchAuthorsPerspectives(true),
         fetchEvidenceRecords(true)
       ]);
-      setResearchList(resData);
+      // Admin reader always exposes the prepared research register, while Firebase
+      // remains authoritative for records that have already been imported/published.
+      // This lets the owner read the complete prepared register before/while importing it.
+      const byId = new Map<string, ResearchRecordItem>();
+      PREPARED_PUBLISHED_RESEARCH.forEach(record => byId.set(record.id, record));
+      resData.forEach(record => byId.set(record.id, record));
+      setResearchList(Array.from(byId.values()));
       setAuthorsList(authData);
       setEvidenceList(eviData);
     } catch (e) {
@@ -855,6 +869,11 @@ export const AdminPortalView: React.FC = () => {
             <div className="mt-2 font-serif-np font-bold text-stone-900">{language === 'ne' ? 'अनुसन्धान अभिलेख' : 'Research Archive'}</div>
             <div className="mt-1 text-[11px] text-stone-500">{researchList.length} {language === 'ne' ? 'प्रविष्टि' : 'records'} · {language === 'ne' ? '+ नयाँ अनुसन्धान' : '+ New Research'}</div>
           </button>
+          <button type="button" onClick={() => setActiveTab('library')} className={`archive-admin-workspace-card text-left rounded-xl border p-4 transition-all ${activeTab === 'library' ? 'border-amber-700 bg-amber-50 shadow-sm' : 'border-stone-200 bg-stone-50 hover:border-amber-300'}`}>
+            <div className="flex items-center gap-2 text-emerald-900"><FolderOpen className="w-4 h-4" /><span className="text-[10px] uppercase tracking-wider font-semibold">{language === 'ne' ? 'पढाइ' : 'Reader'}</span></div>
+            <div className="mt-2 font-serif-np font-bold text-stone-900">{language === 'ne' ? 'पूर्ण Research Library' : 'Full Research Library'}</div>
+            <div className="mt-1 text-[11px] text-stone-500">{ADMIN_RESEARCH_LIBRARY_DOCUMENTS.length} {language === 'ne' ? 'फाइल पढ्न मिल्ने' : 'research files readable'}</div>
+          </button>
           <button type="button" onClick={() => setActiveTab('sources')} className="archive-admin-workspace-card text-left rounded-xl border border-stone-200 bg-stone-50 p-4 hover:border-amber-300 transition-all">
             <div className="flex items-center gap-2 text-sky-800"><BookOpen className="w-4 h-4" /><span className="text-[10px] uppercase tracking-wider font-semibold">{language === 'ne' ? 'स्रोत' : 'Sources'}</span></div>
             <div className="mt-2 font-serif-np font-bold text-stone-900">{language === 'ne' ? 'स्रोत तथा विद्वत् सामग्री' : 'Sources & Scholarly Material'}</div>
@@ -890,6 +909,17 @@ export const AdminPortalView: React.FC = () => {
             }`}
           >
             {adminText(language, 'अनुसन्धान (Research)')} ({researchList.length})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('library')}
+            className={`px-3 py-2 rounded whitespace-nowrap cursor-pointer transition-colors ${
+              activeTab === 'library'
+                ? 'bg-stone-900 text-white'
+                : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
+            }`}
+          >
+            {language === 'ne' ? 'पूर्ण Research Library' : 'Full Research Library'} ({ADMIN_RESEARCH_LIBRARY_DOCUMENTS.length})
           </button>
 
           <button
@@ -1029,10 +1059,100 @@ export const AdminPortalView: React.FC = () => {
 
       {/* 5. Main Content Dispatcher per Tab */}
 
+      {/* TAB: FULL RESEARCH LIBRARY */}
+      {activeTab === 'library' && (
+        <div className="space-y-4">
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4 sm:p-5">
+            <div className="flex items-center gap-2 text-emerald-900">
+              <FolderOpen className="w-5 h-5" />
+              <h3 className="font-serif-np text-xl font-bold">{language === 'ne' ? 'पूर्ण Research Library — Admin Reader' : 'Full Research Library — Admin Reader'}</h3>
+            </div>
+            <p className="mt-2 text-xs leading-6 text-stone-700">
+              {language === 'ne'
+                ? 'ZIP मा सुरक्षित गरिएको Research Library का पाठ्य अनुसन्धान अभिलेखहरू यहीँबाट पढ्न सकिन्छ। यो खण्ड प्रशासकका लागि मात्र हो। मूल file/folder structure हटाइएको छैन।'
+                : 'Read the preserved Research Library text records directly from the Editorial Console. This reader is admin-only and does not replace or delete the original file/folder structure.'}
+            </p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-[300px_minmax(0,1fr)] gap-4">
+            <div className="rounded-xl border border-stone-200 bg-white overflow-hidden">
+              <div className="p-3 border-b border-stone-200">
+                <input
+                  value={libraryQuery}
+                  onChange={e => setLibraryQuery(e.target.value)}
+                  placeholder={language === 'ne' ? 'Research file खोज्नुहोस्...' : 'Search research files...'}
+                  className="w-full rounded-lg border border-stone-300 px-3 py-2 text-xs bg-stone-50"
+                />
+              </div>
+              <div className="max-h-[70vh] overflow-y-auto p-2 space-y-1">
+                {ADMIN_RESEARCH_LIBRARY_DOCUMENTS
+                  .filter(doc => {
+                    const q = libraryQuery.trim().toLowerCase();
+                    return !q || doc.title.toLowerCase().includes(q) || doc.path.toLowerCase().includes(q);
+                  })
+                  .map(doc => (
+                    <button
+                      key={doc.path}
+                      type="button"
+                      onClick={() => setSelectedLibraryPath(doc.path)}
+                      className={`w-full rounded-lg px-3 py-2 text-left text-xs transition-colors ${selectedLibraryPath === doc.path ? 'bg-stone-900 text-white' : 'text-stone-700 hover:bg-stone-100'}`}
+                    >
+                      <span className="block font-semibold">{doc.title}</span>
+                      <span className={`mt-1 block break-all text-[10px] ${selectedLibraryPath === doc.path ? 'text-stone-300' : 'text-stone-400'}`}>{doc.path}</span>
+                    </button>
+                  ))}
+              </div>
+            </div>
+            <div className="min-w-0 rounded-xl border border-stone-200 bg-white">
+              {(() => {
+                const doc = ADMIN_RESEARCH_LIBRARY_DOCUMENTS.find(item => item.path === selectedLibraryPath) || ADMIN_RESEARCH_LIBRARY_DOCUMENTS[0];
+                if (!doc) return <div className="p-8 text-sm text-stone-500">No research library documents.</div>;
+                return (
+                  <div>
+                    <div className="border-b border-stone-200 p-4 sm:p-5">
+                      <div className="text-[10px] font-mono uppercase tracking-wider text-emerald-800">{doc.type}</div>
+                      <h4 className="mt-1 font-serif-np text-xl font-bold text-stone-900">{doc.title}</h4>
+                      <p className="mt-1 break-all text-[11px] text-stone-500">{doc.path}</p>
+                    </div>
+                    <pre className="max-h-[70vh] overflow-auto whitespace-pre-wrap break-words p-4 sm:p-6 text-xs leading-6 text-stone-800 font-mono">{doc.content}</pre>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* TAB: RESEARCH */}
       {activeTab === 'research' && (
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
+            {PREPARED_PUBLISHED_RESEARCH.length > 0 && (
+              <button
+                type="button"
+                disabled={publishingPreparedResearch}
+                onClick={async () => {
+                  try {
+                    setPublishingPreparedResearch(true);
+                    setFeedbackMsg(null);
+                    for (const record of PREPARED_PUBLISHED_RESEARCH) {
+                      await saveResearchRecord(record, 'Initial publication of prepared cross-checked research register');
+                    }
+                    setFeedbackMsg(language === 'ne' ? `${PREPARED_PUBLISHED_RESEARCH.length} अनुसन्धान अभिलेख Firebase मा प्रकाशित गरियो।` : `${PREPARED_PUBLISHED_RESEARCH.length} prepared research records published to Firebase.`);
+                    await reloadData();
+                  } catch (error) {
+                    console.error(error);
+                    setFeedbackMsg(language === 'ne' ? 'प्रकाशन असफल भयो। कृपया प्रशासक प्रमाणीकरण जाँच गर्नुहोस्।' : 'Publication failed. Please check administrator authentication.');
+                  } finally {
+                    setPublishingPreparedResearch(false);
+                  }
+                }}
+                className="px-3 py-2 rounded bg-emerald-800 text-white text-xs font-semibold disabled:opacity-50"
+              >
+                {publishingPreparedResearch
+                  ? (language === 'ne' ? 'प्रकाशित हुँदैछ…' : 'Publishing…')
+                  : (language === 'ne' ? `तयार अनुसन्धान Firebase मा प्रकाशित गर्नुहोस् (${PREPARED_PUBLISHED_RESEARCH.length})` : `Publish prepared research to Firebase (${PREPARED_PUBLISHED_RESEARCH.length})`)}
+              </button>
+            )}
             <div className="relative flex-1 min-w-[260px]">
               <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -1093,6 +1213,13 @@ export const AdminPortalView: React.FC = () => {
 
                         <div className="flex items-center gap-2">
                           <span className="text-[11px] font-mono text-stone-400">v{item.version}</span>
+                          <button
+                            onClick={() => setReadingResearchItem(item)}
+                            className="p-1.5 text-emerald-700 hover:text-emerald-900 border border-emerald-200 rounded hover:bg-emerald-50 cursor-pointer"
+                            title={adminText(language, 'पूरा अनुसन्धान पढ्नुहोस्')}
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                          </button>
                           <button
                             onClick={() => {
                               setEditingResearchItem(item);
@@ -1492,6 +1619,154 @@ export const AdminPortalView: React.FC = () => {
       {/* TAB: REVISIONS */}
       {activeTab === 'revisions' && (
         <AdminRevisionHistoryView />
+      )}
+
+      {/* ADMIN-ONLY FULL RESEARCH READER */}
+      {readingResearchItem && (
+        <div
+          className="fixed inset-0 z-[100] bg-stone-950/70 p-3 sm:p-6"
+          role="dialog"
+          aria-modal="true"
+          aria-label={language === 'ne' ? 'पूर्ण अनुसन्धान पाठक' : 'Full Research Reader'}
+          onClick={() => setReadingResearchItem(null)}
+        >
+          <div
+            className="mx-auto h-full max-w-5xl overflow-y-auto rounded-2xl bg-[#FBF9F5] shadow-2xl"
+            onClick={event => event.stopPropagation()}
+          >
+            <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-stone-200 bg-[#FBF9F5]/95 px-4 py-4 backdrop-blur sm:px-6">
+              <div>
+                <div className="text-[10px] font-mono uppercase tracking-wider text-amber-800">
+                  {language === 'ne' ? 'प्रशासक-मात्र अनुसन्धान पाठक' : 'Admin-only Research Reader'}
+                </div>
+                <h2 className="mt-1 font-serif-np text-xl font-bold text-stone-900">
+                  {language === 'ne' ? (readingResearchItem.nepaliTitle || readingResearchItem.title) : (readingResearchItem.englishTitle || readingResearchItem.title)}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setReadingResearchItem(null)}
+                className="shrink-0 rounded-lg border border-stone-300 bg-white px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+              >
+                {language === 'ne' ? 'बन्द गर्नुहोस्' : 'Close'}
+              </button>
+            </div>
+
+            <div className="space-y-6 p-4 sm:p-6">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  [language === 'ne' ? 'श्रेणी' : 'Category', readingResearchItem.category],
+                  [language === 'ne' ? 'विषय' : 'Topic', readingResearchItem.topic],
+                  [language === 'ne' ? 'अनुसन्धान स्थिति' : 'Research status', readingResearchItem.researchStatus],
+                  [language === 'ne' ? 'प्रकाशन अवस्था' : 'Workflow', readingResearchItem.workflowStatus],
+                  [language === 'ne' ? 'संस्करण' : 'Version', `v${readingResearchItem.version}`],
+                  [language === 'ne' ? 'मिति' : 'Date', readingResearchItem.date || readingResearchItem.createdAt?.slice(0,10)],
+                  [language === 'ne' ? 'अधिकार' : 'Rights', readingResearchItem.rightsStatus],
+                  [language === 'ne' ? 'अनुसन्धानकर्ता' : 'Researcher', readingResearchItem.createdBy || 'SADAN RAI']
+                ].map(([label, value]) => (
+                  <div key={label} className="rounded-lg border border-stone-200 bg-white p-3">
+                    <div className="text-[10px] font-mono uppercase tracking-wider text-stone-500">{label}</div>
+                    <div className="mt-1 break-words text-sm font-medium text-stone-900">{value || '—'}</div>
+                  </div>
+                ))}
+              </div>
+
+              <section className="rounded-xl border border-stone-200 bg-white p-4 sm:p-5">
+                <h3 className="mb-3 font-serif-np text-lg font-bold text-stone-900">{language === 'ne' ? 'स्रोत तथा प्रत्यक्ष विवरण' : 'Source & Direct Evidence Details'}</h3>
+                <div className="space-y-3 text-sm leading-7 text-stone-700">
+                  <p><strong>{language === 'ne' ? 'लेखक/सूचक:' : 'Author/Informant:'}</strong> {readingResearchItem.author || '—'}</p>
+                  <p><strong>{language === 'ne' ? 'ग्रन्थ/प्रकाशन:' : 'Work/Publication:'}</strong> {readingResearchItem.publication || '—'}</p>
+                  <p><strong>{language === 'ne' ? 'प्रकाशन वर्ष:' : 'Publication year:'}</strong> {readingResearchItem.publicationYear || '—'}</p>
+                  <p><strong>{language === 'ne' ? 'अध्याय/खण्ड:' : 'Chapter/Section:'}</strong> {readingResearchItem.chapterSection || '—'}</p>
+                  <p><strong>{language === 'ne' ? 'पृष्ठ/फोलियो:' : 'Page/Folio:'}</strong> {readingResearchItem.pageNumber || '—'}</p>
+                  <p><strong>{language === 'ne' ? 'मूल उद्धरण:' : 'Original quotation:'}</strong><br />{readingResearchItem.originalQuotation || '—'}</p>
+                  <p><strong>{language === 'ne' ? 'प्रमाण विवरण:' : 'Evidence description:'}</strong><br />{readingResearchItem.evidence || '—'}</p>
+                  {readingResearchItem.sourceUrl && (
+                    <p><strong>{language === 'ne' ? 'स्रोत URL:' : 'Source URL:'}</strong> <a href={readingResearchItem.sourceUrl} target="_blank" rel="noreferrer" className="break-all text-amber-800 underline">{readingResearchItem.sourceUrl}</a></p>
+                  )}
+                </div>
+              </section>
+
+              {readingResearchItem.nepaliExplanation || readingResearchItem.englishExplanation || readingResearchItem.nepaliTranslation || readingResearchItem.englishTranslation ? (
+                <section className="rounded-xl border border-stone-200 bg-white p-4 sm:p-5">
+                  <h3 className="mb-3 font-serif-np text-lg font-bold text-stone-900">{language === 'ne' ? 'व्याख्या तथा अनुवाद' : 'Explanation & Translation'}</h3>
+                  <div className="space-y-4 text-sm leading-7 text-stone-700">
+                    {readingResearchItem.nepaliExplanation && <p><strong>नेपाली व्याख्या:</strong><br />{readingResearchItem.nepaliExplanation}</p>}
+                    {readingResearchItem.englishExplanation && <p><strong>English explanation:</strong><br />{readingResearchItem.englishExplanation}</p>}
+                    {readingResearchItem.nepaliTranslation && <p><strong>नेपाली अनुवाद:</strong><br />{readingResearchItem.nepaliTranslation}</p>}
+                    {readingResearchItem.englishTranslation && <p><strong>English translation:</strong><br />{readingResearchItem.englishTranslation}</p>}
+                  </div>
+                </section>
+              ) : null}
+
+              {readingResearchItem.synthesis && (
+                <section className="rounded-xl border border-stone-200 bg-white p-4 sm:p-5">
+                  <h3 className="mb-3 font-serif-np text-lg font-bold text-stone-900">{language === 'ne' ? 'अनुसन्धान संश्लेषण' : 'Research Synthesis'}</h3>
+                  <div className="space-y-4 text-sm leading-7 text-stone-700">
+                    <p><strong>Documented information:</strong><br />{readingResearchItem.synthesis.documentedInfo || '—'}</p>
+                    <p><strong>Scholarly interpretation:</strong><br />{readingResearchItem.synthesis.scholarlyInterpretation || '—'}</p>
+                    <p><strong>Oral tradition:</strong><br />{readingResearchItem.synthesis.oralTradition || '—'}</p>
+                    <p><strong>Disputed information:</strong><br />{readingResearchItem.synthesis.disputedInfo || '—'}</p>
+                    <p><strong>Further research needed:</strong><br />{readingResearchItem.synthesis.furtherResearchNeeded || '—'}</p>
+                  </div>
+                </section>
+              )}
+
+              {readingResearchItem.researchWorkflow && (
+                <section className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 sm:p-5">
+                  <div className="mb-4 flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-amber-800" />
+                    <h3 className="font-serif-np text-lg font-bold text-stone-900">{language === 'ne' ? 'आन्तरिक अनुसन्धान / Cross-check Workspace' : 'Internal Research / Cross-check Workspace'}</h3>
+                  </div>
+                  <div className="space-y-5 text-sm leading-7 text-stone-700">
+                    {(readingResearchItem.researchWorkflow.sourceEntries || []).map((source, index) => (
+                      <div key={source.id || index} className="rounded-lg border border-amber-200 bg-white p-4">
+                        <div className="mb-2 font-semibold text-stone-900">{language === 'ne' ? `स्रोत ${index + 1}` : `Source ${index + 1}`}</div>
+                        <p><strong>{language === 'ne' ? 'स्रोत प्रकार:' : 'Source kind:'}</strong> {source.sourceKind || '—'}</p>
+                        <p><strong>{language === 'ne' ? 'लेखक/सूचक:' : 'Author/Informant:'}</strong> {source.authorOrInformant || '—'}</p>
+                        <p><strong>{language === 'ne' ? 'काम/स्रोत:' : 'Work/Source:'}</strong> {source.workOrSource || '—'}</p>
+                        <p><strong>{language === 'ne' ? 'स्रोतले के भन्छ:' : 'What it says:'}</strong> {source.whatItSays || '—'}</p>
+                        <p><strong>{language === 'ne' ? 'सन्दर्भ:' : 'Reference:'}</strong> {source.reference || '—'}</p>
+                        <p><strong>{language === 'ne' ? 'प्रमाण टिप्पणी:' : 'Evidence note:'}</strong> {source.evidenceNote || '—'}</p>
+                        <p><strong>{language === 'ne' ? 'Assessment:' : 'Assessment:'}</strong> {source.assessment || '—'}</p>
+                        {source.evidenceAttachments?.length ? (
+                          <div className="mt-3 space-y-1">
+                            <strong>{language === 'ne' ? 'प्रमाण फाइल:' : 'Evidence files:'}</strong>
+                            {source.evidenceAttachments.map(file => (
+                              <a key={file.id} href={file.url} target="_blank" rel="noreferrer" className="block break-all text-amber-800 underline">{file.name}</a>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    ))}
+                    <p><strong>{language === 'ne' ? 'Cross-check agreements:' : 'Cross-check agreements:'}</strong><br />{readingResearchItem.researchWorkflow.crossCheckAgreements || '—'}</p>
+                    <p><strong>{language === 'ne' ? 'Differences / contradictions:' : 'Differences / contradictions:'}</strong><br />{readingResearchItem.researchWorkflow.crossCheckDifferences || '—'}</p>
+                    <p><strong>{language === 'ne' ? 'Evidence assessment:' : 'Evidence assessment:'}</strong><br />{readingResearchItem.researchWorkflow.evidenceAssessment || '—'}</p>
+                    <p><strong>{language === 'ne' ? 'Researcher analysis:' : 'Researcher analysis:'}</strong><br />{readingResearchItem.researchWorkflow.researcherAnalysis || '—'}</p>
+                    <p><strong>{language === 'ne' ? 'Final research conclusion:' : 'Final research conclusion:'}</strong><br />{readingResearchItem.researchWorkflow.finalConclusion || readingResearchItem.researchConclusion || '—'}</p>
+                  </div>
+                </section>
+              )}
+
+              <div className="flex flex-wrap gap-2 border-t border-stone-200 pt-5">
+                <button
+                  type="button"
+                  onClick={() => { setEditingResearchItem(readingResearchItem); setReadingResearchItem(null); setActiveForm('research'); }}
+                  className="rounded-lg bg-stone-900 px-4 py-2 text-xs font-semibold text-white hover:bg-stone-800"
+                >
+                  {language === 'ne' ? 'सम्पादन खोल्नुहोस्' : 'Open editor'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setReadingResearchItem(null)}
+                  className="rounded-lg border border-stone-300 bg-white px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+                >
+                  {language === 'ne' ? 'पाठक बन्द गर्नुहोस्' : 'Close reader'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

@@ -7,6 +7,7 @@ import { ContentProtectionAttribution } from '../common/ContentProtectionAttribu
 import { RESEARCH_STATUS_LABELS, BRAND_INFO } from '../../data/archiveData';
 import { auth } from '../../firebase';
 import { TRANSLATIONS } from '../../data/translations';
+import { PREPARED_PUBLISHED_RESEARCH } from '../../data/preparedPublishedResearch';
 import { 
   ShieldCheck, 
   CheckCircle2, 
@@ -28,8 +29,11 @@ export const ResearchView: React.FC = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => setIsAdmin(user?.email === BRAND_INFO.contactEmail));
     fetchResearchRecords(false).then(records => {
-      setPublishedRecords(records);
+      // The prepared research register is a safe public fallback until the owner imports
+      // the same records into Firestore. Firestore remains the authoritative CMS when populated.
+      setPublishedRecords(records.length > 0 ? records : PREPARED_PUBLISHED_RESEARCH);
     }).catch(err => {
+      setPublishedRecords(PREPARED_PUBLISHED_RESEARCH);
       console.warn('Error loading research records:', err);
     }).finally(() => {
       setLoading(false);
@@ -51,6 +55,23 @@ export const ResearchView: React.FC = () => {
         </h1>
         <p className="text-stone-600 text-sm max-w-3xl leading-relaxed font-sans">
           {t.sections.researchSubtitle}
+        </p>
+      </div>
+
+      {/* Publication status — dated research snapshot */}
+      <div className="rounded-lg border border-stone-300 bg-stone-50 p-5 space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-mono uppercase tracking-wider text-stone-700">
+            {language === 'ne' ? 'प्रकाशित अनुसन्धान अवस्था' : 'Published Research Status'}
+          </span>
+          <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
+            {language === 'ne' ? 'प्रकाशित · v1.0' : 'Published · v1.0'}
+          </span>
+        </div>
+        <p className="text-sm text-stone-700 leading-relaxed">
+          {language === 'ne'
+            ? 'यो अनुसन्धान अभिलेख ३ अक्टोबर २०२६ सम्म संकलन, स्रोत-परीक्षण, क्रस-चेक र विश्लेषण गरिएको अवस्थाको प्रकाशित संस्करण हो। नयाँ प्रमाण वा स्रोत प्राप्त भएमा संस्करणगत रूपमा अद्यावधिक गरिनेछ।'
+            : 'This is the published research snapshot compiled, source-checked, cross-checked, and analysed up to 3 October 2026. New evidence or sources may be incorporated through versioned updates.'}
         </p>
       </div>
 
