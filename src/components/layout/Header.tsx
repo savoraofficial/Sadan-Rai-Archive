@@ -192,6 +192,32 @@ export const Header: React.FC = () => {
               </button>
             </div>
 
+            {/* Mobile Language Switcher — always visible on small screens */}
+            <div
+              className="flex sm:hidden items-center gap-0.5 rounded-lg border border-stone-300 bg-white p-0.5 shadow-sm"
+              role="group"
+              aria-label={language === 'ne' ? 'भाषा चयन' : 'Language selection'}
+            >
+              <button
+                type="button"
+                onClick={() => setLanguage('ne')}
+                className={`px-2 py-1 rounded-md text-[10px] font-bold transition-colors ${language === 'ne' ? 'bg-stone-900 text-white shadow-sm' : 'text-stone-600 hover:bg-stone-100'}`}
+                aria-pressed={language === 'ne'}
+                title="नेपाली"
+              >
+                ने
+              </button>
+              <button
+                type="button"
+                onClick={() => setLanguage('en')}
+                className={`px-2 py-1 rounded-md text-[10px] font-bold transition-colors ${language === 'en' ? 'bg-stone-900 text-white shadow-sm' : 'text-stone-600 hover:bg-stone-100'}`}
+                aria-pressed={language === 'en'}
+                title="English"
+              >
+                EN
+              </button>
+            </div>
+
             {/* Mobile Hamburger Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
