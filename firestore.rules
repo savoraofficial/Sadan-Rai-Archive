@@ -1,0 +1,175 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { return isSignedIn() && request.auth.token.email == 'raiktosadan@gmail.com'; }
+    function isPublished() { return resource.data.workflowStatus == 'published' || resource.data.published == true; }
+
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+
+    match /research_records/{recordId} {
+      allow read: if isPublished() || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    // Cross-check and researcher working notes are never public. They live separately from the published record.
+    match /research_admin_notes/{recordId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+    match /authors_perspectives/{perspectiveId} {
+      allow read: if isPublished() || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    match /evidence_records/{evidenceId} {
+      allow read: if isPublished() || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    match /oral_history_records/{recordId} {
+      allow read: if isPublished() || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Public archive collections are readable; only the owner can change them.
+    match /archive_content/{contentId} {
+      allow read: if resource.data.workflowStatus == 'published' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /articles/{id} {
+      allow read: if isPublished() || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+    match /photos/{id} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    match /media/{id} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    match /sources/{sourceId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /revisions/{revisionId} {
+      allow read, create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /contact_messages/{messageId} {
+      allow create: if request.resource.data.keys().hasAll(['message','purpose','language','createdAt','status'])
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 5000
+        && request.resource.data.purpose is string
+        && request.resource.data.language in ['ne','en']
+        && request.resource.data.status == 'new';
+      allow read, update, delete: if isAdmin();
+    }
+
+
+    // Community engagement: each authenticated visitor gets one immutable like per record.
+    match /archive_likes/{contentKey}/users/{uid} {
+      allow create: if isSignedIn()
+        && uid == request.auth.uid
+        && request.resource.data.keys().hasAll(['contentType','contentId','uid','createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.contentType in ['article','photo','media']
+        && request.resource.data.contentId is string
+        && request.resource.data.contentId.size() > 0
+        && request.resource.data.contentId.size() <= 200;
+      allow read: if true;
+      allow update, delete: if false;
+    }
+
+    // Comments: Google-authenticated visitors may only submit into the moderation
+    // pipeline. Automatic approval is performed by the trusted Firebase function,
+    // never by an untrusted browser.
+    match /archive_comments/{commentId} {
+      allow create: if isSignedIn()
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && request.resource.data.keys().hasOnly(['contentType','contentId','name','message','language','uid','status','createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status in ['pending','blocked']
+        && request.resource.data.contentType in ['article','photo','media']
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.message is string
+        && request.resource.data.message.size() > 0
+        && request.resource.data.message.size() <= 2000
+        && request.resource.data.language in ['ne','en']
+        && request.resource.data.createdAt == request.time
+        && getAfter(/databases/$(database)/documents/comment_rate_limits/$(request.auth.uid)).data.uid == request.auth.uid
+        && getAfter(/databases/$(database)/documents/comment_rate_limits/$(request.auth.uid)).data.lastSubmittedAt == request.time;
+      allow read: if resource.data.status == 'approved' || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Strict per-Google-account comment cooldown. The document cannot be
+    // client-deleted or backdated, and comment creation must happen atomically
+    // with this rate-limit write.
+    match /comment_rate_limits/{uid} {
+      allow create: if isSignedIn()
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','lastSubmittedAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.lastSubmittedAt == request.time;
+      allow update: if isSignedIn()
+        && request.auth.token.firebase.sign_in_provider == 'google.com'
+        && uid == request.auth.uid
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly(['uid','lastSubmittedAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.lastSubmittedAt == request.time
+        && request.time >= resource.data.lastSubmittedAt + duration.value(30, 's');
+      allow read, delete: if isAdmin();
+    }
+
+    // Visitors can report a published comment. One report per visitor session
+    // and comment is enforced by the deterministic document id.
+    match /archive_comment_reports/{reportId} {
+      allow create: if isSignedIn()
+        && reportId == request.resource.data.commentId + '__' + request.auth.uid
+        && request.resource.data.keys().hasOnly(['commentId','reporterUid','reason','status','createdAt'])
+        && request.resource.data.reporterUid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.commentId is string
+        && request.resource.data.commentId.size() > 0
+        && request.resource.data.reason is string
+        && request.resource.data.reason.size() > 0
+        && request.resource.data.reason.size() <= 120;
+      allow read: if isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    // Support requests are not payments. They are private owner-reviewed intents.
+    match /support_intents/{intentId} {
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasAll(['plan','amountUsd','name','email','language','uid','status','createdAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.plan in ['supporter','member','patron','one_time']
+        && request.resource.data.amountUsd is number
+        && (
+          (request.resource.data.plan in ['supporter','member','patron'] && request.resource.data.amountUsd in [3,5,10])
+          || (request.resource.data.plan == 'one_time' && request.resource.data.amountUsd > 0 && request.resource.data.amountUsd <= 10000)
+        )
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 100
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 160;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Only the owner can create the authoritative earnings ledger. Visitors cannot self-report income.
+    match /earnings/{earningId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    match /test/{docId} { allow read, write: if false; }
+  }
+}
