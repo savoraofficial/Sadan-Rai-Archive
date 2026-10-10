@@ -18,6 +18,7 @@ import { OriginalResearchView } from './components/views/OriginalResearchView';
 import { ArticlesView } from './components/views/ArticlesView';
 import { ArticleDetailView } from './components/views/ArticleDetailView';
 import { PhotoArchiveView } from './components/views/PhotoArchiveView';
+import { PatanMuseumEvidenceView } from './components/views/PatanMuseumEvidenceView';
 import { MusicVideoView } from './components/views/MusicVideoView';
 import { SourcesView } from './components/views/SourcesView';
 import { AboutView } from './components/views/AboutView';
@@ -83,6 +84,8 @@ function ArchiveApp() {
       if (art) {
         title = `${art.title} | SADAN RAI`;
       }
+    } else if (currentRoute === '/patan-museum-evidence') {
+      title = language === 'ne' ? 'पाटन संग्रहालय — शिलालेख तथा ऐतिहासिक प्रमाण | सदन राई' : 'Patan Museum — Inscriptions & Historical Evidence | SADAN RAI';
     } else if (currentRoute === '/photos') {
       title = language === 'ne' ? 'तस्बिर सङ्ग्रह | सदन राई' : 'Photo Archive | SADAN RAI';
     } else if (currentRoute === '/media') {
@@ -160,6 +163,8 @@ function ArchiveApp() {
         return <ArticlesView />;
       case '/photos':
         return <PhotoArchiveView />;
+      case '/patan-museum-evidence':
+        return <PatanMuseumEvidenceView />;
       case '/media':
         return <MusicVideoView />;
       case '/sources':

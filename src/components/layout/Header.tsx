@@ -48,6 +48,7 @@ export const Header: React.FC = () => {
     { label: t.nav.photos, route: '/photos' },
     { label: t.nav.media, route: '/media' },
     { label: t.nav.sources, route: '/sources' },
+    { label: language === 'ne' ? 'पाटन संग्रहालय प्रमाण' : 'Patan Museum Evidence', route: '/patan-museum-evidence' },
     { label: t.nav.about, route: '/about' },
     { label: t.nav.contact, route: '/contact' },
     { label: addonT.nav.support, route: '/support' },
