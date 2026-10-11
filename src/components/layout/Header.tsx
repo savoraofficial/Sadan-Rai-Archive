@@ -86,12 +86,15 @@ export const Header: React.FC = () => {
               className="text-left group cursor-pointer focus:outline-hidden"
               aria-label={language === 'ne' ? 'सदन राई गृहपृष्ठ' : 'Sadan Rai Home'}
             >
-              <div className="flex items-center gap-2">
-                <span className="brand-lock font-display-brand font-bold tracking-wider text-stone-900 group-hover:text-amber-900 transition-colors inline-flex items-center gap-1.5 shrink-0">
-                  <span className={language === 'ne' ? 'font-serif-np' : 'font-display-brand'}>{language === 'ne' ? 'सदन राई' : 'SADAN RAI'}</span>
-                  <OfficialVerifiedBadge size="sm" />
+              <div className="flex items-center gap-3">
+                <span className="brand-lock font-display-brand font-bold tracking-wider text-stone-900 group-hover:text-amber-900 transition-colors inline-flex flex-col items-start shrink-0 leading-none">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className={language === 'ne' ? 'font-serif-np' : 'font-display-brand'}>{language === 'ne' ? 'सदन राई' : 'SADAN RAI'}</span>
+                    <OfficialVerifiedBadge size="sm" />
+                  </span>
+                  <span className={`archive-wordmark-sub mt-1 ${language === 'ne' ? 'font-serif-np' : ''}`}>{language === 'ne' ? 'अभिलेखालय' : 'ARCHIVE'}</span>
                 </span>
-                <span className="hidden sm:block h-5 w-px bg-stone-300" aria-hidden="true" />
+                <span className="hidden sm:block h-7 w-px bg-stone-300/80" aria-hidden="true" />
                 <span className="hidden 2xl:block text-xs font-sans text-stone-600 font-medium tracking-normal line-clamp-1 max-w-[220px] min-w-0">
                   {t.institutionalName}
                 </span>

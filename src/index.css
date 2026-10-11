@@ -718,3 +718,342 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
     line-height: 1.25 !important;
   }
 }
+
+/* English-only mobile hero refinement — keep Nepali layout and copy untouched. */
+.archive-hero-kicker-en{letter-spacing:.22em;line-height:1.5;margin-bottom:18px}
+.archive-hero-brand-en{font-size:clamp(2.5rem,6.2vw,4.5rem);letter-spacing:.045em;white-space:nowrap}
+.archive-hero-title-en{font-size:clamp(1.05rem,2.8vw,2.25rem);line-height:1.28;letter-spacing:-.025em;margin-top:22px}
+.archive-hero-title-en span{margin-top:2px}
+@media(max-width:640px){
+  .archive-hero-kicker-en{font-size:9px;letter-spacing:.16em;line-height:1.45;margin-bottom:16px}
+  .archive-hero-brand-en{font-size:clamp(2.25rem,10.2vw,3.1rem);letter-spacing:.035em}
+  .archive-home > section:first-child .archive-hero-title-en{font-size:clamp(1rem,4.65vw,1.3rem);line-height:1.35;letter-spacing:-.035em;margin-top:22px;white-space:normal}
+}
+@media(max-width:360px){
+  .archive-hero-kicker-en{font-size:8px;letter-spacing:.12em}
+  .archive-hero-brand-en{font-size:2.15rem}
+  .archive-home > section:first-child .archive-hero-title-en{font-size:1rem}
+}
+
+/* SADAN RAI ARCHIVE — requested museum-inspired public identity refinement.
+   Additive, public-facing styles only; existing routes and functionality remain unchanged. */
+.archive-wordmark-sub{display:block;font-family:var(--font-display);font-size:.56em;font-weight:500;letter-spacing:.34em;color:#b68a43;line-height:1.1}
+.archive-hero-archive-word{font-family:var(--font-display);font-size:clamp(1.1rem,2.2vw,1.8rem);font-weight:500;letter-spacing:.34em;color:#e0b96f;line-height:1.1;margin-top:5px}
+.archive-home > section:first-child{
+  background-color:#05090c!important;
+  background-image:linear-gradient(90deg,rgba(3,8,12,.98) 0%,rgba(3,8,12,.86) 34%,rgba(3,8,12,.48) 67%,rgba(3,8,12,.35) 100%),linear-gradient(0deg,rgba(3,8,12,.78),transparent 45%),url('/patan-museum-evidence/01_Shilalekh_Closeup.jpg')!important;
+  background-size:cover!important;background-position:center 43%!important;
+}
+.archive-home > section:first-child > div.relative.max-w-6xl{
+  text-align:left!important;padding-top:clamp(3.5rem,8vw,7.25rem)!important;padding-bottom:clamp(2.5rem,5vw,4.25rem)!important;
+}
+.archive-home > section:first-child .archive-hero-wordmark{justify-content:flex-start!important;align-items:flex-start!important}
+.archive-home > section:first-child .archive-hero-brand-en{font-size:clamp(2.9rem,6.4vw,5.4rem)!important;line-height:.98!important;letter-spacing:.055em!important;white-space:normal!important}
+.archive-home > section:first-child .archive-hero-archive-word{font-size:clamp(1.45rem,3.4vw,2.7rem);letter-spacing:.38em}
+.archive-home > section:first-child .archive-hero-kicker{text-align:left!important;color:#e5bd70!important;letter-spacing:.22em!important}
+.archive-home > section:first-child h1{max-width:700px!important;font-family:var(--font-serif)!important;font-weight:500!important;letter-spacing:-.025em!important;text-align:left!important;margin-top:1.6rem!important}
+.archive-home > section:first-child > div.relative.max-w-6xl > p,
+.archive-home > section:first-child .max-w-3xl{margin-left:0!important;margin-right:0!important;max-width:650px!important;text-align:left!important}
+.archive-home > section:first-child .max-w-3xl.border-y{border-color:rgba(226,190,118,.28)!important;margin-top:1.6rem!important;padding:1rem 0!important}
+.archive-home > section:first-child .mt-8.flex{justify-content:flex-start!important}
+.archive-home > section:first-child .archive-hero-button-primary{background:linear-gradient(135deg,#f0cf8b,#c89a4a)!important;color:#15120c!important;border:1px solid #e2bb70!important;border-radius:3px!important;box-shadow:none!important;padding:13px 20px!important}
+.archive-home > section:first-child .archive-hero-button-primary:hover{background:#f8dfab!important}
+.archive-home > section:first-child .relative.border-t{background:rgba(4,8,11,.84)!important;border-color:rgba(226,190,118,.18)!important}
+.archive-dashboard-shell{background:#0b1115!important;border-color:rgba(218,183,111,.2)!important;color:#f4efe5!important;box-shadow:0 18px 50px rgba(0,0,0,.15)!important}
+.archive-dashboard-head h2{color:#f7f1e6!important;font-family:var(--font-serif)!important;font-weight:500!important}
+.archive-dashboard-head p{color:#b9b5ae!important}
+.archive-dashboard .archive-kicker{color:#d4ad67!important}
+.archive-stat{background:#10181d!important;border-color:rgba(255,255,255,.09)!important;color:#f6f1e7!important}
+.archive-stat:hover{background:#172127!important;border-color:rgba(218,183,111,.42)!important}
+.archive-stat small{color:#b9b5ae!important}
+.archive-home > section:not(:first-child) .archive-kicker,
+.archive-home > section:not(:first-child) .text-\[10px\].uppercase{letter-spacing:.2em}
+.archive-home > section:not(:first-child) .research-sources-section{background:#0b1115!important;border-color:rgba(218,183,111,.18)!important;color:#f4efe5!important}
+.archive-home > section:not(:first-child) .research-sources-section h2{color:#f4efe5!important}
+.archive-home > section:not(:first-child) .research-sources-section p{color:#c1bbb1!important}
+.archive-home > section:not(:first-child) .research-source-card{background:#10181d!important;border-color:rgba(255,255,255,.1)!important;color:#f4efe5!important}
+.archive-home > section:not(:first-child) .research-source-card strong{color:#f4efe5!important}
+.archive-home > section:not(:first-child) .research-source-card p{color:#c1bbb1!important}
+@media(max-width:640px){
+  .archive-wordmark-sub{font-size:.5em;letter-spacing:.28em}
+  .archive-home > section:first-child{background-position:58% center!important;background-image:linear-gradient(90deg,rgba(3,8,12,.94),rgba(3,8,12,.7)),linear-gradient(0deg,rgba(3,8,12,.7),rgba(3,8,12,.08)),url('/patan-museum-evidence/01_Shilalekh_Closeup.jpg')!important}
+  .archive-home > section:first-child > div.relative.max-w-6xl{padding-top:3.25rem!important;padding-bottom:2.25rem!important}
+  .archive-home > section:first-child .archive-hero-wordmark{gap:8px!important}
+  .archive-home > section:first-child .archive-hero-brand-en{font-size:clamp(2.3rem,11vw,3.25rem)!important;letter-spacing:.025em!important;line-height:1.02!important}
+  .archive-home > section:first-child .archive-hero-archive-word{font-size:1.22rem;letter-spacing:.28em;margin-top:4px}
+  .archive-home > section:first-child h1{margin-top:1.25rem!important;font-size:clamp(1.2rem,5.1vw,1.6rem)!important;line-height:1.35!important}
+  .archive-home > section:first-child .max-w-3xl.border-y{padding:12px 0!important}
+  .archive-home > section:first-child .max-w-3xl.border-y p:first-child{font-size:13px!important;line-height:1.55!important}
+  .archive-home > section:first-child .relative.border-t .grid{grid-template-columns:1fr!important;gap:9px!important;align-items:start!important}
+  .archive-dashboard-shell{border-radius:14px!important;padding:16px!important}
+  .archive-dashboard-head h2{font-size:1.45rem!important;line-height:1.25!important}
+}
+
+/* SADAN RAI ARCHIVE — targeted homepage compactness refinement.
+   Additive visual overrides only: preserves all existing content, routes and behavior. */
+.archive-home > section:first-child > div.relative.max-w-6xl {
+  padding-top: clamp(2.6rem, 5vw, 4.25rem) !important;
+  padding-bottom: clamp(1.8rem, 3.5vw, 2.8rem) !important;
+}
+.archive-home > section:first-child .archive-hero-kicker {
+  margin-bottom: 1rem !important;
+}
+.archive-home > section:first-child h1 {
+  margin-top: 1.05rem !important;
+}
+.archive-home > section:first-child > div.relative.max-w-6xl > p:not(.max-w-3xl) {
+  margin-top: .7rem !important;
+}
+.archive-home > section:first-child .max-w-3xl:not(.border-y) {
+  margin-top: 1rem !important;
+  font-size: .92rem !important;
+  line-height: 1.65 !important;
+}
+.archive-home > section:first-child .max-w-3xl.border-y {
+  margin-top: 1.1rem !important;
+  padding: .8rem 0 !important;
+}
+.archive-home > section:first-child .mt-8.flex {
+  margin-top: 1.1rem !important;
+}
+.archive-home > section:first-child .relative.border-t .grid {
+  padding-top: .7rem !important;
+  padding-bottom: .7rem !important;
+  gap: .55rem !important;
+}
+.archive-home > section:not(:first-child) {
+  scroll-margin-top: 90px;
+}
+.archive-home > section:nth-child(n+3) {
+  margin-top: 2.8rem !important;
+}
+.archive-home > section:nth-child(n+3) > .text-center {
+  margin-bottom: 1.35rem !important;
+}
+.archive-home > section:nth-child(n+3) .rounded-3xl,
+.archive-home > section:nth-child(n+3) .rounded-2xl {
+  box-shadow: 0 5px 18px rgba(28,25,23,.045);
+}
+.archive-home > section:nth-child(3) .grid > button {
+  padding: 1.15rem !important;
+  border-radius: 1rem !important;
+}
+.archive-home > section:nth-child(3) .grid > button strong {
+  font-size: 1.05rem !important;
+  line-height: 1.4 !important;
+}
+.archive-home > section:nth-child(3) .grid > button small {
+  margin-top: .45rem !important;
+  font-size: .75rem !important;
+}
+.archive-dashboard-shell {
+  padding: 1.2rem !important;
+  border-radius: 1rem !important;
+}
+.archive-dashboard-head {
+  padding-bottom: 1rem !important;
+}
+.archive-stat-grid {
+  gap: .55rem !important;
+}
+.archive-stat {
+  padding: .7rem .75rem !important;
+  border-radius: .75rem !important;
+}
+@media (max-width: 640px) {
+  .archive-home > section:first-child > div.relative.max-w-6xl {
+    padding: 1.65rem 1.15rem 1.25rem !important;
+  }
+  .archive-home > section:first-child .archive-hero-kicker {
+    margin-bottom: .8rem !important;
+    font-size: 8px !important;
+    letter-spacing: .15em !important;
+  }
+  .archive-home > section:first-child .archive-hero-brand-en {
+    font-size: clamp(2.05rem, 9.4vw, 2.8rem) !important;
+    letter-spacing: .015em !important;
+  }
+  .archive-home > section:first-child .archive-hero-archive-word {
+    font-size: 1.05rem !important;
+    letter-spacing: .25em !important;
+  }
+  .archive-home > section:first-child h1 {
+    margin-top: .95rem !important;
+    font-size: clamp(1.12rem, 4.7vw, 1.38rem) !important;
+    line-height: 1.38 !important;
+  }
+  .archive-home > section:first-child > div.relative.max-w-6xl > p:not(.max-w-3xl) {
+    margin-top: .6rem !important;
+    font-size: 9px !important;
+    line-height: 1.55 !important;
+    letter-spacing: .12em !important;
+  }
+  .archive-home > section:first-child .max-w-3xl:not(.border-y) {
+    margin-top: .85rem !important;
+    font-size: .82rem !important;
+    line-height: 1.6 !important;
+  }
+  .archive-home > section:first-child .max-w-3xl.border-y {
+    margin-top: .9rem !important;
+    padding: .65rem 0 !important;
+  }
+  .archive-home > section:first-child .max-w-3xl.border-y p:first-child {
+    font-size: .78rem !important;
+    line-height: 1.5 !important;
+  }
+  .archive-home > section:first-child .max-w-3xl.border-y p:last-child {
+    font-size: .72rem !important;
+    line-height: 1.5 !important;
+  }
+  .archive-home > section:first-child .mt-8.flex {
+    margin-top: .9rem !important;
+  }
+  .archive-home > section:first-child .archive-hero-button-primary {
+    padding: .72rem 1rem !important;
+    font-size: .82rem !important;
+  }
+  .archive-home > section:first-child .relative.border-t .grid {
+    padding: .65rem 1rem !important;
+    gap: .45rem !important;
+    font-size: .72rem !important;
+  }
+  .archive-home > section:nth-child(n+3) {
+    margin-top: 2.1rem !important;
+  }
+  .archive-home > section:nth-child(n+3) > .text-center {
+    margin-bottom: 1rem !important;
+  }
+  .archive-home > section:nth-child(3) h2 {
+    font-size: 1.45rem !important;
+    line-height: 1.35 !important;
+  }
+  .archive-home > section:nth-child(3) .grid > button {
+    padding: 1rem !important;
+    gap: .7rem !important;
+  }
+  .archive-dashboard-shell {
+    padding: .9rem !important;
+  }
+  .archive-dashboard-head h2 {
+    font-size: 1.3rem !important;
+  }
+  .archive-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .archive-stat {
+    gap: .55rem !important;
+    padding: .65rem .55rem !important;
+  }
+  .archive-stat-icon {
+    width: 30px !important;
+    height: 30px !important;
+  }
+  .archive-stat strong {
+    font-size: 1.05rem !important;
+  }
+  .archive-stat small {
+    font-size: 9px !important;
+  }
+}
+
+/* RESPONSIVE MUSEUM-STYLE HERO BACKGROUND — targeted homepage-only refinement */
+.archive-home > section:first-child {
+  background-color: #050505 !important;
+  background-image:
+    linear-gradient(90deg, rgba(4, 5, 6, .98) 0%, rgba(4, 5, 6, .91) 29%, rgba(4, 5, 6, .58) 52%, rgba(4, 5, 6, .20) 100%),
+    linear-gradient(0deg, rgba(4, 5, 6, .82) 0%, rgba(4, 5, 6, .10) 38%, rgba(4, 5, 6, .24) 100%),
+    url('/patan-museum-evidence/hero-stone-background.jpg') !important;
+  background-size: cover !important;
+  background-position: center 48% !important;
+  background-repeat: no-repeat !important;
+}
+
+.archive-home > section:first-child > div.relative.max-w-6xl {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 72rem;
+  padding-top: clamp(3.25rem, 7vw, 6.5rem) !important;
+  padding-bottom: clamp(2rem, 4.5vw, 3.75rem) !important;
+}
+
+.archive-home > section:first-child .archive-hero-wordmark {
+  max-width: 100%;
+  gap: clamp(.5rem, 1.4vw, 1rem) !important;
+}
+
+.archive-home > section:first-child .archive-hero-brand-en {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.archive-home > section:first-child .relative.border-t .grid {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .archive-home > section:first-child {
+    background-image:
+      linear-gradient(90deg, rgba(4, 5, 6, .93) 0%, rgba(4, 5, 6, .79) 55%, rgba(4, 5, 6, .55) 100%),
+      linear-gradient(0deg, rgba(4, 5, 6, .84) 0%, rgba(4, 5, 6, .12) 58%, rgba(4, 5, 6, .35) 100%),
+      url('/patan-museum-evidence/hero-stone-background.jpg') !important;
+    background-size: cover !important;
+    background-position: 64% center !important;
+  }
+
+  .archive-home > section:first-child > div.relative.max-w-6xl {
+    padding: clamp(2rem, 8vw, 3.25rem) 1.1rem 1.6rem !important;
+  }
+
+  .archive-home > section:first-child .archive-hero-wordmark {
+    align-items: flex-start !important;
+    gap: .45rem !important;
+  }
+
+  .archive-home > section:first-child .archive-hero-brand-en {
+    font-size: clamp(2rem, 9.4vw, 2.8rem) !important;
+    line-height: 1.02 !important;
+    letter-spacing: .015em !important;
+  }
+
+  .archive-home > section:first-child .archive-hero-archive-word {
+    font-size: clamp(1rem, 4.8vw, 1.3rem) !important;
+    letter-spacing: .25em !important;
+  }
+
+  .archive-home > section:first-child h1 {
+    max-width: 100% !important;
+    overflow-wrap: normal !important;
+    margin-top: 1rem !important;
+    font-size: clamp(1.12rem, 4.7vw, 1.42rem) !important;
+    line-height: 1.38 !important;
+  }
+
+  .archive-home > section:first-child .max-w-3xl:not(.border-y) {
+    max-width: 100% !important;
+    font-size: .86rem !important;
+    line-height: 1.65 !important;
+  }
+
+  .archive-home > section:first-child .max-w-3xl.border-y {
+    max-width: 100% !important;
+    padding: .8rem 0 !important;
+  }
+
+  .archive-home > section:first-child .archive-hero-button-primary {
+    min-height: 46px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 360px) {
+  .archive-home > section:first-child > div.relative.max-w-6xl {
+    padding-left: .9rem !important;
+    padding-right: .9rem !important;
+  }
+
+  .archive-home > section:first-child .archive-hero-brand-en {
+    font-size: clamp(1.85rem, 9vw, 2.15rem) !important;
+  }
+}
+

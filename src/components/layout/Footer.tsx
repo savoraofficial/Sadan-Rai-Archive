@@ -28,16 +28,12 @@ export const Footer: React.FC = () => {
           {/* Col 1: Identity & Motto */}
           <div className="space-y-3">
             <div>
-              <h2 className="brand-lock font-display-brand text-white font-bold tracking-wider inline-flex items-center gap-1.5">
-                <span>{t.brandName}</span>
-                <OfficialVerifiedBadge size="sm" />
-                {language === 'ne' && (
-                  <span className="brand-lock font-serif-np font-normal text-stone-400 ml-1">· {t.brandNameSub}</span>
-                )}
+              <h2 className="brand-lock font-display-brand text-white font-bold tracking-wider inline-flex flex-col items-start leading-none">
+                <span className="inline-flex items-center gap-1.5"><span>{t.brandName}</span><OfficialVerifiedBadge size="sm" /></span>
+                <span className={`archive-wordmark-sub mt-1 ${language === 'ne' ? 'font-serif-np' : ''}`}>{language === 'ne' ? 'अभिलेखालय' : 'ARCHIVE'}</span>
+                {language === 'ne' && <span className="font-serif-np font-normal text-stone-400 text-xs mt-1">{t.brandNameSub}</span>}
               </h2>
-              <p className="text-xs text-amber-400 font-mono tracking-wider mt-0.5">
-                {t.institutionalName}
-              </p>
+              <p className="text-xs text-amber-400 font-mono tracking-wider mt-2">{t.institutionalName}</p>
             </div>
             
             <p className="font-serif-np text-sm text-stone-300 font-medium leading-relaxed">

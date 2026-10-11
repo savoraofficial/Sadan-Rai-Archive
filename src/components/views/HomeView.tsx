@@ -43,15 +43,18 @@ export const HomeView: React.FC = () => {
           <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[440px] h-[440px] rounded-full border border-amber-500/10" />
         </div>
         <div className="relative max-w-6xl mx-auto px-5 sm:px-8 py-20 sm:py-28 text-center">
-          <div className="text-[10px] sm:text-xs tracking-[0.28em] uppercase text-amber-400 font-mono mb-6">
+          <div className={`archive-hero-kicker text-[10px] sm:text-xs tracking-[0.28em] uppercase text-amber-400 font-mono mb-6 ${ne ? 'archive-hero-kicker-ne' : 'archive-hero-kicker-en'}`}>
             {ne ? 'हाम्रो पुर्खा · हाम्रो पहिचान' : 'OUR ANCESTORS · OUR IDENTITY'}
           </div>
-          <div className="inline-flex items-center gap-3 flex-wrap justify-center">
-            <span className={`brand-lock brand-lock-hero ${ne ? 'font-serif-np' : 'font-display-brand'} font-bold tracking-[0.06em]`}>{ne ? 'सदन राई' : 'SADAN RAI'}</span>
-            <OfficialVerifiedBadge size="lg" />
+          <div className="archive-hero-wordmark inline-flex items-start gap-3 flex-wrap justify-center">
+            <div className="flex flex-col items-start">
+              <span className={`brand-lock brand-lock-hero ${ne ? 'font-serif-np' : 'font-display-brand archive-hero-brand-en'} font-bold tracking-[0.06em]`}>{ne ? 'सदन राई' : 'SADAN RAI'}</span>
+              <span className={`archive-hero-archive-word ${ne ? 'font-serif-np' : ''}`}>{ne ? 'अभिलेखालय' : 'ARCHIVE'}</span>
+            </div>
+            <span className="pt-1"><OfficialVerifiedBadge size="lg" /></span>
           </div>
-          <h1 className="font-serif-np text-2xl sm:text-4xl font-semibold text-stone-100 mt-7">
-            {ne ? 'इतिहास, सभ्यता तथा संस्कृति अभिलेखालय' : 'History, Civilization & Culture Archive'}
+          <h1 className={`font-serif-np text-2xl sm:text-4xl font-semibold text-stone-100 mt-7 ${ne ? '' : 'archive-hero-title-en'}`}>
+            {ne ? 'इतिहास, सभ्यता तथा संस्कृति अभिलेखालय' : <>History, Civilization &amp; Culture <span className="block mt-1 text-amber-200">Digital Archive</span></>}
           </h1>
           <p className="mt-3 text-[10px] sm:text-xs tracking-[0.22em] uppercase text-stone-400">
             {ne ? 'इतिहास · संस्कृति · सभ्यता · मौखिक परम्परा' : 'History · Culture · Civilization · Oral Traditions'}
