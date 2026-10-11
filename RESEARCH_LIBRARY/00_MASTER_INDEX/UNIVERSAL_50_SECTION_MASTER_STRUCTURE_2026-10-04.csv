@@ -1,0 +1,51 @@
+order,id,english_title,nepali_title,evidence_required,extensible
+1,overview_identity,Overview Identity & Scope,परिचय पहिचान तथा दायरा,true,true
+2,geography_territory,Geography Territory & Historical Region,भूगोल क्षेत्र तथा ऐतिहासिक भू-सीमा,true,true
+3,chronology_periodization,Chronology & Periodization,कालक्रम तथा काल-विभाजन,true,true
+4,prehistory,Prehistory,प्रागैतिहासिक अवस्था,true,true
+5,protohistory,Protohistory,आद्य-ऐतिहासिक अवस्था,true,true
+6,origins_formation,Origins & Formation,उत्पत्ति तथा गठन,true,true
+7,peoples_communities,Peoples & Communities,जनसमुदाय तथा समुदायहरू,true,true
+8,migration_mobility,Migration & Population Mobility,बसाइँसराइ तथा जनगतिशीलता,true,true
+9,settlements_urbanism,Settlements Cities & Habitation,बस्ती नगर तथा आवासीय इतिहास,true,true
+10,political_history,Political History,राजनीतिक इतिहास,true,true
+11,states_kingdoms,States Kingdoms & Political Units,राज्य साम्राज्य तथा राजनीतिक एकाइ,true,true
+12,dynasties_rulers,Dynasties Rulers & Leadership,वंश शासक तथा नेतृत्व,true,true
+13,administration_institutions,Governance Administration & Institutions,शासन प्रशासन तथा संस्था,true,true
+14,law_customary_order,Law Justice & Customary Order,कानुन न्याय तथा परम्परागत व्यवस्था,true,true
+15,war_diplomacy,Wars Conflicts & Diplomacy,युद्ध द्वन्द्व तथा कूटनीति,true,true
+16,social_structure,Social Structure,सामाजिक संरचना,true,true
+17,kinship_clans,Kinship Clans Lineages & Identity,कुल वंश नातासम्बन्ध तथा पहिचान,true,true
+18,status_caste_gender,Status Caste Class & Gender Relations,सामाजिक स्थिति जाति वर्ग तथा लैङ्गिक सम्बन्ध,true,true
+19,economy_livelihood,Economy & Livelihood,अर्थव्यवस्था तथा जीविका,true,true
+20,agriculture_pastoralism,Agriculture Pastoralism & Food Systems,कृषि पशुपालन तथा खाद्य प्रणाली,true,true
+21,trade_exchange,Trade Exchange & Economic Routes,व्यापार विनिमय तथा आर्थिक मार्ग,true,true
+22,technology_craft,Technology Craft & Innovation,प्रविधि शिल्प तथा नवप्रवर्तन,true,true
+23,religion_belief,Religion & Belief Systems,धर्म तथा विश्वास प्रणाली,true,true
+24,philosophy_theology,Philosophy Theology & Worldview,दर्शन धर्मशास्त्र तथा विश्वदृष्टि,true,true
+25,cosmology_sacred_world,Cosmology & Sacred World,ब्रह्माण्ड-दृष्टि तथा पवित्र विश्व,true,true
+26,sacred_texts_canons,Sacred Texts Canons & Religious Literature,पवित्र ग्रन्थ canon तथा धार्मिक साहित्य,true,true
+27,mythology_epics,Mythology Legends & Epics,मिथक आख्यान तथा महाकाव्य,true,true
+28,ritual_customs,Rituals Rites & Customs,अनुष्ठान संस्कार तथा चलन,true,true
+29,festivals_calendar,Festivals Celebrations & Calendars,पर्व उत्सव तथा पात्रो परम्परा,true,true
+30,life_cycle_ethics,Life-Cycle Practices & Ethics,जीवनचक्र संस्कार तथा नैतिक परम्परा,true,true
+31,oral_history_tradition,Oral History & Oral Tradition,मौखिक इतिहास तथा मौखिक परम्परा,true,true
+32,language_history,Language & Linguistic History,भाषा तथा भाषिक इतिहास,true,true
+33,scripts_writing,Scripts Writing & Record-Making,लिपि लेखन तथा अभिलेखन,true,true
+34,literature_textual_traditions,Literature & Textual Traditions,साहित्य तथा पाठ परम्परा,true,true
+35,education_knowledge,Education & Knowledge Systems,शिक्षा तथा ज्ञान प्रणाली,true,true
+36,arts_music_dance,Art Music Dance & Performance,कला संगीत नृत्य तथा प्रदर्शन परम्परा,true,true
+37,architecture_monuments,Architecture Monuments & Heritage,वास्तुकला स्मारक तथा सम्पदा,true,true
+38,archaeology_material,Archaeology & Material Culture,पुरातत्व तथा भौतिक संस्कृति,true,true
+39,environment_landscape,Environment Natural Resources & Cultural Landscape,पर्यावरण प्राकृतिक स्रोत तथा सांस्कृतिक भू-दृश्य,true,true
+40,documents_manuscripts,Documents Manuscripts & Archival Objects,दस्तावेज पाण्डुलिपि तथा अभिलेखीय वस्तु,true,true
+41,inscriptions_coins_seals,Inscriptions Coins Seals & Direct Objects,शिलालेख मुद्रा छाप तथा अन्य प्रत्यक्ष वस्तु,true,true
+42,primary_evidence,Primary Sources & Direct Evidence,प्राथमिक स्रोत तथा प्रत्यक्ष प्रमाण,true,true
+43,external_records_comparison,External Records & Comparative History,बाह्य स्रोत तथा तुलनात्मक इतिहास,true,true
+44,scholarship_historiography,Scholarship & Historiography,विद्वत् अनुसन्धान तथा इतिहासलेखन,true,true
+45,modern_transformation,Modern & Contemporary Transformation,आधुनिक तथा समकालीन परिवर्तन,true,true
+46,identity_memory_heritage,Identity Memory & Heritage Continuity,पहिचान सामुदायिक स्मृति तथा सम्पदा निरन्तरता,true,true
+47,diaspora_global_connections,Diaspora & Global Connections,प्रवासी समुदाय तथा विश्वव्यापी सम्बन्ध,true,true
+48,disputes_contradictions,Disputes Contradictions & Unresolved Claims,विवाद विरोधाभास तथा असमाधित दाबी,true,true
+49,research_analysis_conclusions,Research Analysis & Final Conclusions,अनुसन्धान विश्लेषण तथा निष्कर्ष,true,true
+50,sources_evidence_rights_versions,Sources Evidence Rights Versions & Further Research,स्रोत प्रमाण अधिकार version तथा थप अनुसन्धान,true,true

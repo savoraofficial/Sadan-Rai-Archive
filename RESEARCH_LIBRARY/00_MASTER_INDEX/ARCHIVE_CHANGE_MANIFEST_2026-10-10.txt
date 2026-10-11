@@ -1,0 +1,8 @@
+SADAN RAI ARCHIVES — CHANGE MANIFEST
+Edition: Professional Research Edition
+Date: 2026-10-10
+
+Preserved: original archive files, existing Patan Museum collection, existing research-library content, application/source code, and Git history as carried in the source ZIP.
+Research-only adjustments: kept one canonical Bhringeshwor record group at RESEARCH_LIBRARY/04_SITE_SPECIFIC_HERITAGE/BHRINGESHWOR_MAHADEV_SUNAKOTHI/; removed the duplicate root-level Bhringeshwor folder; clarified video as time-specific visual documentation, not proof of historical dating; documented separation between Patan Museum materials, broader Kirat/Kiranti research, and the Bhringeshwor field record.
+
+No application/source-code files were intentionally edited. This manifest is not a claim that all historical interpretations are independently verified or that the archive has formal institutional accreditation.

@@ -1,0 +1,94 @@
+import { onDocumentCreated } from 'firebase-functions/v2/firestore';
+import { initializeApp } from 'firebase-admin/app';
+
+initializeApp();
+
+const ABUSIVE_PATTERNS = [
+  /\b(fuck|fucking|shit|bitch|bastard|asshole|motherfucker)\b/i,
+  /\b(idiot|stupid|moron|loser|shut\s*up)\b/i,
+  /\b(chutiya|chutiye|madarchod|bhosd|gaand|gandu|muji|randi|boksi)\b/i,
+  /\b(murkha|gadha|kutta|kukur)\b/i,
+];
+const THREAT_PATTERNS = [
+  /\b(i\s*will\s*kill|i['’]ll\s*kill|kill\s+you|murder\s+you|shoot\s+you|stab\s+you)\b/i,
+  /\b(marchu|marne|maridinchhu|hanx[uau]|hanchhu|sakdinchhu)\b/i,
+  /\b(you\s+will\s+die|you\s+are\s+dead)\b/i,
+];
+const EXPLICIT_PATTERNS = [
+  /\b(porn|pornography|xxx|nude|nudes|sex\s+video|sex\s+pic|sexual\s+content)\b/i,
+  /\b(blowjob|dick|penis|vagina|cum|semen|fuck)\b/i,
+];
+const HATE_PATTERNS = [
+  /\b(kill\s+all|exterminate|wipe\s+out)\b/i,
+  /\b(go\s+back\s+to\s+your\s+country)\b/i,
+  /\b(terrorist|subhuman|vermin)\b/i,
+];
+const PHISHING_PATTERNS = [
+  /bit\.ly|tinyurl\.com|t\.co|is\.gd|rb\.gy/i,
+  /\b(verify\s+your\s+account|claim\s+prize|free\s+money|send\s+password|send\s+otp|login\s+here)\b/i,
+];
+
+function normalize(text: string): string {
+  return text.normalize('NFKC').toLowerCase()
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .replace(/[4@]/g, 'a').replace(/[3]/g, 'e').replace(/[1!|]/g, 'i')
+    .replace(/[0]/g, 'o').replace(/[$5]/g, 's').replace(/[7]/g, 't')
+    .replace(/(.)\1{3,}/g, '$1$1').replace(/\s+/g, ' ').trim();
+}
+function repeated(text: string): boolean {
+  const compact = text.replace(/\s+/g, ' ').trim().toLowerCase();
+  const words = compact.split(' ').filter(Boolean);
+  if (words.length >= 6 && new Set(words).size / words.length <= 0.35) return true;
+  const chunks = compact.split(/[.!?,;]+/).map(v => v.trim()).filter(Boolean);
+  return chunks.length >= 3 && new Set(chunks).size / chunks.length <= 0.5;
+}
+function analyze(name: string, message: string) {
+  const combined = normalize(`${name} ${message}`);
+  const reasons: string[] = [];
+  let score = 0;
+  const threat = THREAT_PATTERNS.some(p => p.test(combined));
+  const explicit = EXPLICIT_PATTERNS.some(p => p.test(combined));
+  const abusive = ABUSIVE_PATTERNS.some(p => p.test(combined));
+  const hate = HATE_PATTERNS.some(p => p.test(combined));
+  const phishing = PHISHING_PATTERNS.some(p => p.test(combined));
+  const urls = (message.match(/(?:https?:\/\/|www\.)[^\s<>"']+/gi) || []).length;
+  if (threat) { score += 100; reasons.push('threat_or_violence'); }
+  if (explicit) { score += 90; reasons.push('sexual_or_explicit'); }
+  if (hate) { score += 80; reasons.push('hate_or_harassment'); }
+  if (abusive) { score += 45; reasons.push('abusive_language'); }
+  if (phishing) { score += 55; reasons.push('suspicious_link_or_scam_pattern'); }
+  if (urls >= 2) { score += 45; reasons.push('multiple_urls'); }
+  else if (urls === 1) { score += 20; reasons.push('contains_url'); }
+  if (repeated(message)) { score += 45; reasons.push('repeated_or_spam_text'); }
+  if (message.trim().length < 2) { score += 60; reasons.push('too_short'); }
+  const action = threat || explicit || score >= 100 ? 'blocked' : score >= 20 ? 'pending' : 'approved';
+  return { action, score, reasons };
+}
+
+export const moderateArchiveComment = onDocumentCreated(
+  {
+    document: 'archive_comments/{commentId}',
+    database: 'ai-studio-f97e2084-1a3e-41da-84c9-e299d849fe7a',
+    region: 'us-central1',
+  },
+  async (event) => {
+    const snapshot = event.data;
+    if (!snapshot) return;
+    const data = snapshot.data();
+    if (data.status !== 'pending') return;
+
+    const result = analyze(String(data.name || ''), String(data.message || ''));
+    const nextStatus = result.action;
+
+    await snapshot.ref.update({
+      status: nextStatus,
+      moderationScore: result.score,
+      moderationReasons: result.reasons,
+      moderationSource: 'firebase-server',
+      moderatedAt: new Date(),
+      moderatedBy: 'automatic-moderation',
+    });
+  },
+);
+
+
