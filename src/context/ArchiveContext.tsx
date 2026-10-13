@@ -111,16 +111,12 @@ export const ArchiveProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return () => { active = false; unsubscribe(); };
   }, []);
 
-  // Route Synchronization with Hash
+  // Route synchronization: route changes always bring the newly opened view
+  // into view, regardless of whether navigation came from a card, header, or hash.
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace(/^#/, '');
-      if (hash) {
-        setCurrentRoute(hash.startsWith('/') ? hash : '/' + hash);
-      } else {
-        setCurrentRoute('/');
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setCurrentRoute(hash ? (hash.startsWith('/') ? hash : '/' + hash) : '/');
     };
 
     handleHashChange();
@@ -128,11 +124,19 @@ export const ArchiveProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  useEffect(() => {
+    // Wait until React commits the destination view before scrolling. This avoids
+    // the old page's scroll position winning when the route changes quickly.
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [currentRoute]);
+
   const navigateTo = (route: string) => {
     const cleanRoute = route.startsWith('/') ? route : '/' + route;
-    window.location.hash = cleanRoute;
+    if (window.location.hash !== `#${cleanRoute}`) window.location.hash = cleanRoute;
     setCurrentRoute(cleanRoute);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const requireOwner = () => {

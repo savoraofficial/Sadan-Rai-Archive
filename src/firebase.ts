@@ -44,8 +44,8 @@ export async function testFirestoreConnection(): Promise<boolean> {
   }
 }
 
-// Run connection check
-testFirestoreConnection();
-
+// Connection diagnostics are intentionally opt-in. Running a server-only probe
+// on every page load produced a misleading offline warning even when the archive
+// could continue from its configured Firestore/cache behavior.
 export { app, db, auth, storage, googleProvider, appCheck };
 
