@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { adminText } from '../../data/adminTranslations';
 import { useArchive } from '../../context/ArchiveContext';
 import { RevisionItem } from '../../types';
@@ -10,13 +10,27 @@ export const AdminRevisionHistoryView: React.FC = () => {
   const [revisions, setRevisions] = useState<RevisionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRevision, setSelectedRevision] = useState<RevisionItem | null>(null);
+  const [search, setSearch] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [loadError, setLoadError] = useState(false);
+  const filteredRevisions = useMemo(() => revisions.filter((rev) => {
+    const matchesType = typeFilter === 'all' || rev.targetType === typeFilter;
+    const haystack = [rev.targetId, rev.targetType, rev.author, rev.authorEmail, rev.changeNotes, String(rev.version)].filter(Boolean).join(' ').toLocaleLowerCase();
+    return matchesType && haystack.includes(search.trim().toLocaleLowerCase());
+  }), [revisions, search, typeFilter]);
 
   useEffect(() => {
     async function load() {
       setLoading(true);
-      const data = await fetchRevisions();
-      setRevisions(data);
-      setLoading(false);
+      try {
+        const data = await fetchRevisions();
+        setRevisions(data);
+        setLoadError(false);
+      } catch {
+        setLoadError(true);
+      } finally {
+        setLoading(false);
+      }
     }
     load();
   }, []);
@@ -38,11 +52,27 @@ export const AdminRevisionHistoryView: React.FC = () => {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_220px] gap-3">
+        <label className="block text-xs font-semibold text-stone-700">
+          {adminText(language, 'खोज्नुहोस्')}
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={adminText(language, 'लेखक, टिप्पणी, ID वा संस्करण खोज्नुहोस्')} className="mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-normal" type="search" />
+        </label>
+        <label className="block text-xs font-semibold text-stone-700">
+          {adminText(language, 'लक्ष्य प्रकार छान्नुहोस्')}
+          <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)} className="mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm font-normal">
+            <option value="all">{adminText(language, 'सबै प्रकार')}</option>
+            {[...new Set(revisions.map((rev) => rev.targetType))].sort().map((type) => <option key={type} value={type}>{type}</option>)}
+          </select>
+        </label>
+      </div>
+
+      {loadError && <div role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-800">{adminText(language, 'संस्करण इतिहास लोड गर्न सकिएन। प्रशासकको लगइन र Firebase connection जाँच्नुहोस्।')}</div>}
+
       {loading ? (
         <div className="p-10 text-center text-xs text-stone-500 font-mono">
           {adminText(language, 'संस्करण इतिहास लोड हुँदैछ...')}
         </div>
-      ) : revisions.length > 0 ? (
+      ) : filteredRevisions.length > 0 ? (
         <div className="space-y-3">
           <div className="overflow-x-auto rounded-lg border border-stone-200">
             <table className="w-full text-left text-xs font-sans">
@@ -57,7 +87,7 @@ export const AdminRevisionHistoryView: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-stone-100 bg-white">
-                {revisions.map(rev => (
+                {filteredRevisions.map(rev => (
                   <tr key={rev.id} className="hover:bg-stone-50 transition-colors">
                     <td className="p-3 font-mono text-stone-600 whitespace-nowrap">
                       {new Date(rev.createdAt).toLocaleString()}
@@ -92,7 +122,7 @@ export const AdminRevisionHistoryView: React.FC = () => {
         <div className="p-8 text-center bg-stone-50 rounded-lg border border-dashed border-stone-300 space-y-2">
           <Clock className="w-8 h-8 text-stone-400 mx-auto" />
           <h4 className="font-serif-np font-bold text-stone-800">
-            {adminText(language, 'हाल कुनै परिमार्जन लग उपलब्ध छैन')}
+            {revisions.length ? adminText(language, 'खोजी वा filter सँग मिल्ने संस्करण भेटिएन') : adminText(language, 'हाल कुनै परिमार्जन लग उपलब्ध छैन')}
           </h4>
           <p className="text-xs text-stone-500 font-sans">
             {adminText(language, 'अनुसन्धान वा लेखक प्रविष्टि सुरक्षित गर्दा स्वचालित रूपमा संस्करण अडिट सिर्जना हुनेछ।')}
@@ -135,7 +165,8 @@ export const AdminRevisionHistoryView: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 border-t border-stone-200 flex justify-end">
+            <div className="p-3 border-t border-stone-200 flex flex-wrap items-center justify-between gap-2">
+              <span className="text-[11px] text-stone-500">{adminText(language, 'यो संस्करण केवल पढ्नका लागि हो; मूल अभिलेखमा restore गर्ने कार्य अझै उपलब्ध छैन।')}</span>
               <button
                 onClick={() => setSelectedRevision(null)}
                 className="px-4 py-1.5 bg-stone-800 text-white rounded text-xs cursor-pointer"

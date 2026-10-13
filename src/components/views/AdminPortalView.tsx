@@ -1230,7 +1230,7 @@ export const AdminPortalView: React.FC = () => {
                     <div className="min-w-0"><h3 className="font-serif-np font-bold text-sm text-stone-900 leading-snug">{language === 'ne' ? item.ne : item.en}</h3><p className="mt-1.5 text-[11px] leading-5 text-stone-500">{language === 'ne' ? item.descNe : item.descEn}</p></div>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <button type="button" onClick={() => { setActiveTab(item.tab); setActiveForm(null); if ('category' in item && item.category) setSelectedAdminCategory(item.category); if ('contentKey' in item && item.contentKey) { setSelectedPublicContentKey(item.contentKey); setPublicContentDraft(null); } }} className="inline-flex items-center gap-1 rounded-md bg-stone-900 px-2.5 py-1.5 text-[10px] font-semibold text-white hover:bg-stone-800"><LayoutDashboard className="h-3 w-3" />{language === 'ne' ? 'कार्यस्थान खोल्नुहोस्' : 'Open workspace'}</button>
+                    <button type="button" onClick={() => { setActiveTab(item.tab); setActiveForm(null); if ('category' in item && item.category) setSelectedAdminCategory(item.category); if ('contentKey' in item && item.contentKey) { setSelectedPublicContentKey(item.contentKey); setPublicContentDraft(null); } window.setTimeout(() => document.getElementById('admin-workspace-context')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60); }} className="inline-flex items-center gap-1 rounded-md bg-stone-900 px-2.5 py-1.5 text-[10px] font-semibold text-white hover:bg-stone-800"><LayoutDashboard className="h-3 w-3" />{language === 'ne' ? 'कार्यस्थान खोल्नुहोस्' : 'Open workspace'}</button>
                     <button type="button" onClick={() => navigateTo(item.route)} className="inline-flex items-center gap-1 rounded-md border border-stone-300 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-stone-700 hover:bg-stone-50"><Eye className="h-3 w-3" />{language === 'ne' ? 'सार्वजनिक हेर्नुहोस्' : 'Public preview'}</button>
                   </div>
                 </div>
@@ -1541,7 +1541,7 @@ export const AdminPortalView: React.FC = () => {
 
       {/* 5. Main Content Dispatcher per Tab */}
       {activeTab !== 'dashboard' && (
-        <div className="archive-admin-context-bar sticky top-2 z-30 rounded-xl border border-stone-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur">
+        <div id="admin-workspace-context" className="archive-admin-context-bar sticky top-2 z-30 rounded-xl border border-stone-200 bg-white/95 px-3 py-2 shadow-sm backdrop-blur scroll-mt-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-1.5 text-[11px]">
               <button type="button" onClick={() => setActiveTab('dashboard')} className="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 font-semibold text-stone-600 hover:bg-stone-100 hover:text-stone-900">
