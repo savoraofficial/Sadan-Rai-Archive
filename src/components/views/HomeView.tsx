@@ -1,6 +1,5 @@
 import React from 'react';
 import { useArchive } from '../../context/ArchiveContext';
-import { OfficialVerifiedBadge } from '../common/OfficialVerifiedBadge';
 import {
   ArrowRight, BookOpen, Camera, FileText, HeartHandshake, Landmark,
   MapPin, MessageSquareQuote, Music, ShieldCheck, Sparkles, Video
@@ -24,12 +23,17 @@ export const HomeView: React.FC = () => {
       neText: 'जीवित संस्कृति, धर्म, अभ्यास, भाषा र सामुदायिक परम्पराको अभिलेख।', enText: 'Living culture, religion, practices, language and community traditions.'
     },
     {
-      no: '03', icon: MapPin, route: '/village', contentKey: 'places_village',
+      no: '03', icon: Landmark, route: '/civilization', contentKey: 'civilization',
+      neTitle: 'सभ्यता', enTitle: 'Civilization',
+      neText: 'जीवनपद्धति, ज्ञान, सामाजिक संरचना र ऐतिहासिक विकासको तुलनात्मक अध्ययन।', enText: 'Comparative study of lifeways, knowledge, social structures and historical development.'
+    },
+    {
+      no: '04', icon: MapPin, route: '/village', contentKey: 'places_village',
       neTitle: 'स्थान तथा गाउँ अभिलेख', enTitle: 'Places & Village Archives',
       neText: 'स्थान, भूगोल, बस्ती, ऐतिहासिक स्थल र स्थानीय इतिहासका अभिलेख।', enText: 'Places, landscapes, settlements, historic sites and local records.'
     },
     {
-      no: '04', icon: MessageSquareQuote, route: '/oral-history', contentKey: 'oral_history',
+      no: '05', icon: MessageSquareQuote, route: '/oral-history', contentKey: 'oral_history',
       neTitle: 'मौखिक इतिहास', enTitle: 'Oral History',
       neText: 'अन्तर्वार्ता, स्मृति, साक्ष्य र स्थानीय ज्ञानलाई स्रोतको रूपमा सुरक्षित गर्ने संरचना।', enText: 'Interviews, memories, testimony and local knowledge preserved as sources.'
     }
@@ -44,18 +48,14 @@ export const HomeView: React.FC = () => {
         </div>
         <div className="relative max-w-6xl mx-auto px-5 sm:px-8 py-20 sm:py-28 text-center">
           <div className={`archive-hero-kicker text-[10px] sm:text-xs tracking-[0.28em] uppercase text-amber-400 font-mono mb-6 ${ne ? 'archive-hero-kicker-ne' : 'archive-hero-kicker-en'}`}>
-            {ne ? 'हाम्रो पुर्खा · हाम्रो पहिचान' : 'OUR ANCESTORS · OUR IDENTITY'}
+            {ne ? 'इतिहास · सभ्यता · संस्कृति' : 'HISTORY · CIVILIZATION · CULTURE'}
           </div>
-          <div className="archive-hero-wordmark inline-flex items-start gap-3 flex-wrap justify-center">
-            <div className="flex flex-col items-start">
-              <span className={`brand-lock brand-lock-hero ${ne ? 'font-serif-np' : 'font-display-brand archive-hero-brand-en'} font-bold tracking-[0.06em]`}>{ne ? 'सदन राई' : 'SADAN RAI'}</span>
-              <span className={`archive-hero-archive-word ${ne ? 'font-serif-np' : ''}`}>{ne ? 'अभिलेखालय' : 'ARCHIVE'}</span>
-            </div>
-            <span className="pt-1"><OfficialVerifiedBadge size="lg" /></span>
-          </div>
-          <h1 className={`font-serif-np text-2xl sm:text-4xl font-semibold text-stone-100 mt-7 ${ne ? '' : 'archive-hero-title-en'}`}>
-            {ne ? 'इतिहास, सभ्यता तथा संस्कृति अभिलेखालय' : <>History, Civilization &amp; Culture <span className="block mt-1 text-amber-200">Digital Archive</span></>}
+          <h1 className={`archive-hero-identity font-serif-np text-4xl sm:text-6xl lg:text-7xl font-bold text-stone-100 mt-2 mb-5 ${ne ? 'archive-hero-identity-ne' : 'archive-hero-identity-en'}`}>
+            {ne ? 'हाम्रा पुर्खा · हाम्रो पहिचान' : 'OUR ANCESTORS · OUR IDENTITY'}
           </h1>
+          <h2 className={`font-serif-np text-2xl sm:text-4xl font-semibold text-stone-100 mt-2 ${ne ? '' : 'archive-hero-title-en'}`}>
+            {ne ? 'इतिहास, सभ्यता तथा संस्कृतिको डिजिटल अभिलेखालय' : <>History, Civilization &amp; Culture <span className="block mt-1 text-amber-200">Digital Archive</span></>}
+          </h2>
           <p className="mt-3 text-[10px] sm:text-xs tracking-[0.22em] uppercase text-stone-400">
             {ne ? 'इतिहास · संस्कृति · सभ्यता · मौखिक परम्परा' : 'History · Culture · Civilization · Oral Traditions'}
           </p>
@@ -63,8 +63,8 @@ export const HomeView: React.FC = () => {
             {ne ? 'इतिहास, सभ्यता, संस्कृति र मौखिक परम्पराका स्रोत, प्रमाण र सन्दर्भलाई व्यवस्थित रूपमा सुरक्षित गर्ने डिजिटल अभिलेख।' : 'A digital archive for documenting history, civilization, culture and oral traditions through sources, evidence and context.'}
           </p>
           <div className="max-w-3xl mx-auto mt-7 py-5 border-y border-stone-800">
-            <p className="font-serif-np text-base sm:text-xl text-amber-200 font-medium">{ne ? '“इतिहास · सभ्यता · सम्पदाका प्रमाण — हामीसँग”' : 'Evidence of History · Civilization · Heritage — With Us'}</p>
-            <p className="mt-2 text-xs sm:text-sm text-stone-400">{ne ? 'हाम्रो पहिचान: इतिहास, सभ्यता र संस्कृतिको साझा संरक्षण।' : 'Our identity: preserving history, civilization and culture together.'}</p>
+            <p className="font-serif-np text-base sm:text-xl text-amber-200 font-medium">{ne ? 'अनुसन्धान · प्रमाण · संरक्षण' : 'RESEARCH · EVIDENCE · PRESERVATION'}</p>
+            <p className="mt-2 text-xs sm:text-sm text-stone-400">{ne ? 'विगतका ज्ञान र सम्पदालाई भावी पुस्ताका लागि सुरक्षित राख्ने मेरो प्रयास।' : 'My effort to preserve the knowledge and heritage of the past for future generations.'}</p>
           </div>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <button onClick={() => navigateTo('/articles')} className="archive-hero-button archive-hero-button-primary">
@@ -176,17 +176,17 @@ export const HomeView: React.FC = () => {
 
       <section className="max-w-6xl mx-auto px-5 sm:px-8 mt-16 grid md:grid-cols-2 gap-5">
         <button onClick={() => navigateTo('/photos')} className="text-left bg-stone-950 text-white rounded-3xl p-7 sm:p-8 hover:bg-stone-900 transition-all hover:-translate-y-0.5">
-          <Camera className="text-amber-400" size={22} /><p className="text-[10px] uppercase tracking-[0.22em] text-stone-400 font-mono mt-5">{ne ? 'दृश्य प्रमाण' : 'VISUAL EVIDENCE'}</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? 'पुरातात्त्विक तथा ऐतिहासिक तस्बिर अभिलेख' : 'Archaeological & Historical Photographic Archive'}</h2><p className="text-sm text-stone-400 mt-2 leading-relaxed">{ne ? 'कहाँको, कहिलेको, कसले खिचेको, स्रोत, अधिकार र प्रमाणसहितको संरचित फोटो अभिलेख।' : 'Structured image records with location, date, photographer, source, rights and evidence.'}</p>
+          <Camera className="text-amber-400" size={22} /><p className="text-[10px] uppercase tracking-[0.22em] text-stone-400 font-mono mt-5">{ne ? 'दृश्य प्रमाण' : 'VISUAL EVIDENCE'}</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? 'पुरातात्त्विक तथा ऐतिहासिक तस्बिर अभिलेख' : 'Archaeological & Historical Photographic Archive'}</h2><p className="text-sm text-stone-400 mt-2 leading-relaxed">{ne ? 'स्थान, मिति, तस्बिर खिच्ने व्यक्ति, स्रोत, प्रयोग-अधिकार र प्रमाणको अवस्थासहित व्यवस्थित तस्बिर अभिलेख।' : 'Structured image records with location, date, photographer, source, rights and evidence.'}</p>
         </button>
         <button onClick={() => navigateTo('/media')} className="text-left bg-[#F7F2E8] text-stone-900 rounded-3xl p-7 sm:p-8 border border-stone-200 hover:border-amber-700 transition-all hover:-translate-y-0.5">
-          <Music className="text-amber-800" size={22} /><p className="text-[10px] uppercase tracking-[0.22em] text-stone-500 font-mono mt-5">{ne ? 'श्रव्य–दृश्य प्रमाण' : 'AUDIOVISUAL EVIDENCE'}</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? 'ऐतिहासिक, सांस्कृतिक तथा दस्तावेजी भिडियो अभिलेख' : 'Historical, Cultural & Documentary Video Archive'}</h2><p className="text-sm text-stone-600 mt-2 leading-relaxed">{ne ? 'स्थान, मिति, सिर्जनाकर्ता, अन्तर्वार्ताकार, स्रोत, अधिकार र transcript/notes सहित।' : 'Location, date, creator, interview details, source, rights and transcript/notes where applicable.'}</p>
+          <Music className="text-amber-800" size={22} /><p className="text-[10px] uppercase tracking-[0.22em] text-stone-500 font-mono mt-5">{ne ? 'श्रव्य–दृश्य प्रमाण' : 'AUDIOVISUAL EVIDENCE'}</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? 'ऐतिहासिक, सांस्कृतिक तथा दस्तावेजी श्रव्य-दृश्य अभिलेख' : 'Historical, Cultural & Documentary Video Archive'}</h2><p className="text-sm text-stone-600 mt-2 leading-relaxed">{ne ? 'स्थान, मिति, सिर्जनाकर्ता, अन्तर्वार्ता विवरण, स्रोत, प्रयोग-अधिकार र उपलब्ध भए प्रतिलिपि तथा टिप्पणीसहितको अभिलेख।' : 'Location, date, creator, interview details, source, rights and transcript/notes where applicable.'}</p>
         </button>
       </section>
 
       <section className="max-w-6xl mx-auto px-5 sm:px-8 mt-16 grid md:grid-cols-3 gap-4">
         <button onClick={() => navigateTo('/archive')} className="text-left bg-stone-950 text-white rounded-3xl p-7 hover:bg-stone-900 transition-all"><FileText className="text-amber-400" size={21}/><p className="text-[10px] uppercase tracking-[0.22em] text-stone-400 font-mono mt-5">{ne ? 'थप अभिलेख' : 'ADDITIONAL ARCHIVE'}</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? (section('additional_archive')?.nepaliTitle || 'थप अभिलेख') : (section('additional_archive')?.englishTitle || 'Additional Archive')}</h2><p className="text-sm text-stone-400 mt-2 leading-relaxed">{ne ? (section('additional_archive')?.nepaliDescription || 'तस्बिर, भिडियो, दस्तावेज, लेख र अन्य सामग्री।') : (section('additional_archive')?.englishDescription || 'Photos, videos, documents, articles and other archival materials.')}</p></button>
-        <button onClick={() => navigateTo('/research-integrity')} className="text-left bg-white border border-stone-200 rounded-3xl p-7 hover:border-amber-700 transition-all"><ShieldCheck className="text-emerald-700" size={21}/><p className="text-[10px] uppercase tracking-[0.22em] text-stone-500 font-mono mt-5">RESEARCH INTEGRITY</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? (section('research_integrity')?.nepaliTitle || 'अनुसन्धान निष्पक्षता') : (section('research_integrity')?.englishTitle || 'Research Integrity')}</h2><p className="text-sm text-stone-600 mt-2 leading-relaxed">{ne ? (section('research_integrity')?.nepaliDescription || '') : (section('research_integrity')?.englishDescription || '')}</p></button>
-        <button onClick={() => navigateTo('/accuracy')} className="text-left bg-white border border-stone-200 rounded-3xl p-7 hover:border-amber-700 transition-all"><ShieldCheck className="text-amber-800" size={21}/><p className="text-[10px] uppercase tracking-[0.22em] text-stone-500 font-mono mt-5">ACCURACY & EVIDENCE</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? (section('accuracy_rules')?.nepaliTitle || 'तथ्य शुद्धताको नियम') : (section('accuracy_rules')?.englishTitle || 'Accuracy & Evidence Standards')}</h2><p className="text-sm text-stone-600 mt-2 leading-relaxed">{ne ? (section('accuracy_rules')?.nepaliDescription || '') : (section('accuracy_rules')?.englishDescription || '')}</p></button>
+        <button onClick={() => navigateTo('/research-integrity')} className="text-left bg-white border border-stone-200 rounded-3xl p-7 hover:border-amber-700 transition-all"><ShieldCheck className="text-emerald-700" size={21}/><p className="text-[10px] uppercase tracking-[0.22em] text-stone-500 font-mono mt-5">{ne ? 'अनुसन्धान निष्पक्षता' : 'RESEARCH INTEGRITY'}</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? (section('research_integrity')?.nepaliTitle || 'अनुसन्धान निष्पक्षता') : (section('research_integrity')?.englishTitle || 'Research Integrity')}</h2><p className="text-sm text-stone-600 mt-2 leading-relaxed">{ne ? (section('research_integrity')?.nepaliDescription || '') : (section('research_integrity')?.englishDescription || '')}</p></button>
+        <button onClick={() => navigateTo('/accuracy')} className="text-left bg-white border border-stone-200 rounded-3xl p-7 hover:border-amber-700 transition-all"><ShieldCheck className="text-amber-800" size={21}/><p className="text-[10px] uppercase tracking-[0.22em] text-stone-500 font-mono mt-5">{ne ? 'तथ्य शुद्धता तथा प्रमाण' : 'ACCURACY & EVIDENCE'}</p><h2 className="font-serif-np text-2xl font-bold mt-2">{ne ? (section('accuracy_rules')?.nepaliTitle || 'तथ्य शुद्धताको नियम') : (section('accuracy_rules')?.englishTitle || 'Accuracy & Evidence Standards')}</h2><p className="text-sm text-stone-600 mt-2 leading-relaxed">{ne ? (section('accuracy_rules')?.nepaliDescription || '') : (section('accuracy_rules')?.englishDescription || '')}</p></button>
       </section>
 
       <section className="max-w-6xl mx-auto px-5 sm:px-8 mt-5 grid md:grid-cols-2 gap-5">
@@ -196,7 +196,7 @@ export const HomeView: React.FC = () => {
 
       <section className="max-w-6xl mx-auto px-5 sm:px-8 mt-16">
         <div className="rounded-3xl bg-stone-950 text-white p-8 sm:p-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-          <div><HeartHandshake className="text-amber-400" size={23} /><p className="text-[10px] uppercase tracking-[0.22em] text-stone-400 font-mono mt-4">{ne ? 'सम्पर्क तथा सहयोग' : 'CONTACT & SUPPORT'}</p><h2 className="archive-share-title font-serif-np text-2xl sm:text-3xl font-bold mt-2">{ne ? <>अभिलेख संरक्षणमा साथ दिन चाहनुहुन्छ?<br />तपाईंसँग पनि यस्तै ऐतिहासिक सामग्री वा अभिलेख छ?</> : <>Would you like to support the archive?<br />Do you have historical records or materials to share?</>}</h2><p className="max-w-2xl text-sm text-stone-400 mt-2 leading-relaxed">{ne ? 'ऐतिहासिक सामग्री, तस्बिर, दस्तावेज, मौखिक इतिहास वा सुझावका लागि chat box मार्फत सम्पर्क गर्नुहोस्।' : 'Share historical material, photographs, documents, oral history or suggestions through the contact chat.'}</p></div>
+          <div><HeartHandshake className="text-amber-400" size={23} /><p className="text-[10px] uppercase tracking-[0.22em] text-stone-400 font-mono mt-4">{ne ? 'सम्पर्क तथा सहयोग' : 'CONTACT & SUPPORT'}</p><h2 className="archive-share-title font-serif-np text-2xl sm:text-3xl font-bold mt-2">{ne ? <>अभिलेख संरक्षणमा साथ दिन चाहनुहुन्छ?<br />तपाईंसँग पनि यस्तै ऐतिहासिक सामग्री वा अभिलेख छ?</> : <>Would you like to support the archive?<br />Do you have historical records or materials to share?</>}</h2><p className="max-w-2xl text-sm text-stone-400 mt-2 leading-relaxed">{ne ? 'ऐतिहासिक सामग्री, तस्बिर, दस्तावेज, मौखिक इतिहास वा सुझाव साझा गर्न सम्पर्क फाराम प्रयोग गर्नुहोस्।' : 'Share historical material, photographs, documents, oral history or suggestions through the contact form.'}</p></div>
           <button onClick={() => navigateTo('/contact')} className="shrink-0 px-6 py-3 bg-white text-stone-950 rounded-xl text-sm font-semibold hover:bg-stone-200 flex items-center gap-2"><MessageSquareQuote size={16} />{ne ? 'अभिलेखसँग साझा गर्नुहोस्' : 'Share with the Archive'}</button>
         </div>
       </section>

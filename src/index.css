@@ -1057,3 +1057,58 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   }
 }
 
+
+
+/* Home identity headline: the brand stays in the header; do not duplicate it in the hero. */
+.archive-hero-identity {
+  max-width: 100%;
+  line-height: 1.16;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+.archive-hero-identity-ne {
+  letter-spacing: 0;
+}
+.archive-hero-identity-en {
+  font-family: var(--font-display);
+  letter-spacing: .025em;
+}
+@media (max-width: 640px) {
+  .archive-hero-identity { font-size: clamp(2rem, 9vw, 3rem); }
+}
+
+/* LOCKED HOME IDENTITY: keep the archive brand in the header only.
+   The identity slogan stays on a single line in both languages, scaling
+   down responsively rather than wrapping or overflowing on narrow screens. */
+.archive-home > section:first-child .archive-hero-identity {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+  text-wrap: nowrap !important;
+  overflow: visible;
+  font-size: clamp(0.75rem, 3.35vw, 2.7rem) !important;
+  line-height: 1.25 !important;
+  letter-spacing: 0 !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.archive-home > section:first-child .archive-hero-identity-en {
+  font-family: var(--font-display) !important;
+  letter-spacing: 0.005em !important;
+}
+.archive-home > section:first-child .archive-hero-identity-ne {
+  font-family: var(--font-serif) !important;
+  letter-spacing: 0 !important;
+}
+@media (min-width: 1100px) {
+  .archive-home > section:first-child .archive-hero-identity {
+    font-size: clamp(2rem, 2.7vw, 2.7rem) !important;
+  }
+}
+@media (max-width: 380px) {
+  .archive-home > section:first-child .archive-hero-identity {
+    font-size: clamp(0.72rem, 3.35vw, 0.82rem) !important;
+    letter-spacing: -0.015em !important;
+  }
+}

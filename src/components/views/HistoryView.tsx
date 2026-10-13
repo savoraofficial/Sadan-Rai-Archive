@@ -612,6 +612,7 @@ export const HistoryCollectionView: React.FC<{ slug: string }> = ({ slug }) => {
   const { language, navigateTo, getArchiveSection } = useArchive();
   const section = getArchiveSection('history_civilization');
   const collection = UNIVERSAL_HISTORY_COLLECTIONS.find(item => item.slug === slug);
+  const collectionContent = getArchiveSection(`history_collection_${slug}`);
   if (!collection) {
     navigateTo('/history');
     return null;
@@ -626,7 +627,7 @@ export const HistoryCollectionView: React.FC<{ slug: string }> = ({ slug }) => {
         <span>›</span>
         <button onClick={() => navigateTo('/history')} className="hover:text-stone-900 font-semibold cursor-pointer">{isNe ? (section?.nepaliTitle || 'इतिहास तथा सभ्यता') : (section?.englishTitle || 'History & Civilization')}</button>
         <span>›</span>
-        <span className="text-stone-900">{isNe ? collection.ne : collection.en}</span>
+        <span className="text-stone-900">{isNe ? (collectionContent?.nepaliTitle || collection.ne) : (collectionContent?.englishTitle || collection.en)}</span>
       </div>
 
       <section className="rounded-3xl bg-stone-900 text-white p-7 sm:p-10 lg:p-12 border border-stone-800">
@@ -636,8 +637,8 @@ export const HistoryCollectionView: React.FC<{ slug: string }> = ({ slug }) => {
               <Icon className="w-4 h-4" />
               <span>{isNe ? 'इतिहास तथा सभ्यता संग्रह' : 'History & Civilization Collection'}</span>
             </div>
-            <h1 className="font-serif-np text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">{isNe ? collection.ne : collection.en}</h1>
-            <p className="text-stone-300 text-sm sm:text-base leading-relaxed">{isNe ? collection.descriptionNe : collection.descriptionEn}</p>
+            <h1 className="font-serif-np text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">{isNe ? (collectionContent?.nepaliTitle || collection.ne) : (collectionContent?.englishTitle || collection.en)}</h1>
+            <p className="text-stone-300 text-sm sm:text-base leading-relaxed">{isNe ? (collectionContent?.nepaliDescription || collection.descriptionNe) : (collectionContent?.englishDescription || collection.descriptionEn)}</p>
           </div>
           {collection.featured && <span className="shrink-0 rounded-full bg-amber-300 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-stone-900">{isNe ? 'मुख्य संग्रह' : 'Main Collection'}</span>}
         </div>
@@ -655,8 +656,13 @@ export const HistoryCollectionView: React.FC<{ slug: string }> = ({ slug }) => {
       ) : (
         <section className="rounded-2xl border border-stone-200 bg-white p-7 sm:p-9 space-y-3">
           <div className="text-xs uppercase tracking-[0.18em] text-stone-500 font-semibold">{isNe ? 'अनुसन्धान स्थिति' : 'Research status'}</div>
-          <h2 className="font-serif-np text-2xl font-bold text-stone-900">{isNe ? 'यो संग्रह विस्तार हुँदैछ' : 'This collection is being developed'}</h2>
-          <p className="text-sm text-stone-600 leading-relaxed">{isNe ? 'यस विषयका प्रमाण, स्रोत र अनुसन्धान अभिलेख क्रमशः थपिँदै जानेछन्। प्रमाण नभएको सामग्रीलाई तथ्यका रूपमा प्रस्तुत गरिँदैन।' : 'Sources, evidence and research records for this subject will be added progressively. Material without adequate evidence will not be presented as established fact.'}</p>
+          <h2 className="font-serif-np text-2xl font-bold text-stone-900">{isNe ? 'अनुसन्धानको दायरा र अभिलेख' : 'Research scope and archive'}</h2>
+          <p className="text-sm text-stone-600 leading-relaxed whitespace-pre-line">{isNe ? (collectionContent?.nepaliBody || 'यस विषयका प्रमाण, स्रोत र अनुसन्धान अभिलेख क्रमशः थपिँदै जानेछन्। प्रमाण नभएको सामग्रीलाई तथ्यका रूपमा प्रस्तुत गरिँदैन.') : (collectionContent?.englishBody || 'Sources, evidence and research records for this subject will be added progressively. Material without adequate evidence will not be presented as established fact.')}</p>
+          <div className="flex flex-wrap gap-2 pt-2">
+            <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-[11px] font-semibold text-stone-600">{isNe ? 'स्रोत तथा सन्दर्भ' : 'Sources & references'}</span>
+            <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-[11px] font-semibold text-stone-600">{isNe ? 'प्रमाण तथा पुरातत्त्व' : 'Evidence & archaeology'}</span>
+            <span className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1 text-[11px] font-semibold text-stone-600">{isNe ? 'मतभेद तथा अनिश्चितता' : 'Disagreement & uncertainty'}</span>
+          </div>
         </section>
       )}
 
@@ -717,8 +723,8 @@ export const HistoryView: React.FC = () => {
             return (
               <button key={item.slug} onClick={() => navigateTo(`/history/${item.slug}`)} className="group text-left rounded-2xl border border-stone-200 bg-white p-5 hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md transition-all cursor-pointer">
                 <div className="flex items-start justify-between gap-4"><span className="rounded-xl bg-stone-100 p-2.5 text-stone-700 group-hover:bg-amber-50 group-hover:text-amber-900"><ItemIcon className="w-5 h-5" /></span><ArrowRight className="w-4 h-4 text-stone-400 group-hover:text-amber-800 mt-1" /></div>
-                <h3 className="font-serif-np text-lg font-bold text-stone-900 mt-4">{isNe ? item.ne : item.en}</h3>
-                <p className="text-xs text-stone-600 leading-relaxed mt-2">{isNe ? item.descriptionNe : item.descriptionEn}</p>
+                <h3 className="font-serif-np text-lg font-bold text-stone-900 mt-4">{isNe ? (getArchiveSection(`history_collection_${item.slug}`)?.nepaliTitle || item.ne) : (getArchiveSection(`history_collection_${item.slug}`)?.englishTitle || item.en)}</h3>
+                <p className="text-xs text-stone-600 leading-relaxed mt-2">{isNe ? (getArchiveSection(`history_collection_${item.slug}`)?.nepaliDescription || item.descriptionNe) : (getArchiveSection(`history_collection_${item.slug}`)?.englishDescription || item.descriptionEn)}</p>
               </button>
             );
           })}

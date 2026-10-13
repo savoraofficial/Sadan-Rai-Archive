@@ -17,6 +17,12 @@ service cloud.firestore {
     match /research_admin_notes/{recordId} {
       allow read, create, update, delete: if isAdmin();
     }
+    // Editable worldwide research framework CMS. Drafts and working notes are owner-only;
+    // published framework records are readable by visitors.
+    match /research_frameworks/{frameworkId} {
+      allow read: if resource.data.workflowStatus == 'published' || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
     match /authors_perspectives/{perspectiveId} {
       allow read: if isPublished() || isAdmin();
       allow create, update, delete: if isAdmin();

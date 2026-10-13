@@ -18,3 +18,12 @@ Use this area to collect books, papers, manuscripts, archival records, maps, sca
 - E5 — Modern interpretation / hypothesis
 
 Do not treat an E3/E4/E5 claim as E1/E2 evidence without independent support.
+
+## Worldwide research framework (editable)
+
+The worldwide historical research framework and working templates are stored in:
+- `00_RESEARCH_STANDARDS/WORLDWIDE_HISTORICAL_RESEARCH_FRAMEWORK.md` — full research method, nine collections, source map, claim-status labels, citations, and publication quality gate.
+- `00_RESEARCH_STANDARDS/RESEARCH_TOPIC_TEMPLATE.md` — copy this for each new topic.
+- `00_RESEARCH_STANDARDS/CLAIM_EVIDENCE_REGISTER_TEMPLATE.csv` — editable claim-by-claim evidence register (open with Excel, LibreOffice, or Google Sheets).
+
+These are additive working documents. They do not automatically alter or publish website content. Keep the nine collection identities separate; update a claim's status only after checking the cited evidence. See the framework's completion statement before describing research as fully verified.
