@@ -26,6 +26,7 @@ export const OralHistoryView: React.FC = () => {
         <p className="text-stone-600 text-sm max-w-3xl leading-relaxed font-sans">
           {language === 'ne' ? (section?.nepaliDescription || t.sections.oralHistorySubtitle) : (section?.englishDescription || t.sections.oralHistorySubtitle)}
         </p>
+        {(language === 'ne' ? section?.nepaliBody : section?.englishBody) && <p className="text-sm text-stone-700 max-w-4xl leading-7 whitespace-pre-line">{language === 'ne' ? section?.nepaliBody : section?.englishBody}</p>}
       </div>
 
       {/* Oral Ethics Guideline Banner */}

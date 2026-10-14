@@ -5,7 +5,8 @@ import { fetchResearchRecords } from '../../services/dbService';
 import { ResearchSynthesisCard } from './ResearchSynthesisCard';
 import { ContentProtectionAttribution } from '../common/ContentProtectionAttribution';
 import { RESEARCH_STATUS_LABELS, BRAND_INFO } from '../../data/archiveData';
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { TRANSLATIONS } from '../../data/translations';
 import { PREPARED_PUBLISHED_RESEARCH } from '../../data/preparedPublishedResearch';
 import { 
@@ -18,11 +19,28 @@ import {
   PlusCircle
 } from 'lucide-react';
 
+const FRAMEWORK_COLLECTION_LABELS: Record<string, [string, string]> = {
+  buddhist: ['बौद्ध इतिहास तथा सभ्यता', 'Buddhist History & Civilization'],
+  hindu: ['हिन्दू इतिहास तथा सभ्यता', 'Hindu History & Civilization'],
+  limbu: ['लिम्बू इतिहास तथा सभ्यता', 'Limbu History & Civilization'],
+  rai: ['राई इतिहास तथा सभ्यता', 'Rai History & Civilization'],
+  kiranti: ['किराँती तथा सम्बन्धित समुदाय', 'Kiranti & Related Communities'],
+  tamang: ['तामाङ इतिहास तथा सभ्यता', 'Tamang History & Civilization'],
+  archaeology: ['पुरातात्त्विक तथा भौतिक इतिहास', 'Archaeological & Material History'],
+  ancient_medieval: ['प्राचीन तथा मध्यकालीन इतिहास', 'Ancient & Medieval History'],
+  comparative_world: ['तुलनात्मक तथा विश्व इतिहास', 'Comparative & World History'],
+  other_future: ['अन्य तथा भविष्यका सभ्यताहरू', 'Other & Future Civilizations'],
+};
+
+type PublicFrameworkRecord = { id: string; title?: string; nepaliTitle?: string; englishTitle?: string; collectionKey?: string; customCollectionName?: string; topic?: string; researchQuestion?: string; nepaliResearchQuestion?: string; englishResearchQuestion?: string; summary?: string; nepaliSummary?: string; englishSummary?: string; nepaliConclusion?: string; englishConclusion?: string; historicalPeriod?: string; geography?: string; researcher?: string; methodology?: string; sections?: { id: string; title: string; content: string }[]; sources?: string; primarySources?: string; secondarySources?: string; exactReferences?: string; sourceProvenance?: string; oralHistoryNotes?: string; archaeologicalEvidence?: string; evidenceAssessment?: string; counterEvidence?: string; alternativeInterpretations?: string; unresolvedQuestions?: string; confidenceAssessment?: string; conclusion?: string; workflowStatus?: string; version?: number; updatedAt?: string; };
+
 export const ResearchView: React.FC = () => {
-  const { navigateTo, language } = useArchive();
+  const { navigateTo, language, getArchiveSection } = useArchive();
+  const section = getArchiveSection('research');
   const [publishedRecords, setPublishedRecords] = useState<ResearchRecordItem[]>([]);
   const [isAdmin, setIsAdmin] = useState(() => auth.currentUser?.email === BRAND_INFO.contactEmail);
   const [loading, setLoading] = useState<boolean>(true);
+  const [publishedFrameworks, setPublishedFrameworks] = useState<PublicFrameworkRecord[]>([]);
 
   const t = TRANSLATIONS[language];
 
@@ -38,6 +56,11 @@ export const ResearchView: React.FC = () => {
     }).finally(() => {
       setLoading(false);
     });
+    // Public readers query only published framework documents. This matches Firestore rules
+    // and keeps drafts and owner working notes private.
+    getDocs(query(collection(db, 'research_frameworks'), where('workflowStatus', '==', 'published')))
+      .then(snapshot => setPublishedFrameworks(snapshot.docs.map(item => ({ id: item.id, ...item.data() } as PublicFrameworkRecord))))
+      .catch(err => { setPublishedFrameworks([]); console.warn('Published framework records could not be loaded:', err); });
     return unsubscribe;
   }, []);
 
@@ -51,11 +74,12 @@ export const ResearchView: React.FC = () => {
           <span>{t.sections.researchCategory}</span>
         </div>
         <h1 className="font-serif-np text-3xl sm:text-4xl font-bold text-stone-900">
-          {t.sections.researchTitle}
+          {language === 'ne' ? (section?.nepaliTitle || t.sections.researchTitle) : (section?.englishTitle || t.sections.researchTitle)}
         </h1>
         <p className="text-stone-600 text-sm max-w-3xl leading-relaxed font-sans">
-          {t.sections.researchSubtitle}
+          {language === 'ne' ? (section?.nepaliDescription || t.sections.researchSubtitle) : (section?.englishDescription || t.sections.researchSubtitle)}
         </p>
+        {(language === 'ne' ? section?.nepaliBody : section?.englishBody) && <p className="text-stone-700 text-sm max-w-4xl leading-7 whitespace-pre-line">{language === 'ne' ? section?.nepaliBody : section?.englishBody}</p>}
       </div>
 
       {/* Publication status — dated research snapshot */}
@@ -133,6 +157,37 @@ export const ResearchView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Published Worldwide Research Framework records */}
+      {publishedFrameworks.length > 0 && (
+        <section className="space-y-5" aria-labelledby="published-worldwide-frameworks">
+          <div className="border-b border-stone-200 pb-4">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-amber-800 font-semibold">{language === 'ne' ? 'विश्वव्यापी अनुसन्धान अभिलेख' : 'WORLDWIDE RESEARCH FRAMEWORK'}</p>
+            <h2 id="published-worldwide-frameworks" className="mt-2 font-serif-np text-2xl sm:text-3xl font-bold text-stone-900">{language === 'ne' ? 'प्रकाशित अनुसन्धान र प्रमाण' : 'Published research and evidence'}</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-stone-600">{language === 'ne' ? 'यी अभिलेख Admin Console बाट प्रकाशित गरिएका अनुसन्धान हुन्। स्रोत, प्रमाण, फरक व्याख्या र अनिश्चितता उपलब्ध भएअनुसार छुट्टाछुट्टै देखाइन्छ।' : 'These records are published from the Admin Console. Sources, evidence, competing interpretations and uncertainty are shown as recorded.'}</p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            {publishedFrameworks.map(record => (
+              <article key={record.id} className="rounded-2xl border border-stone-200 bg-white p-5 sm:p-6 shadow-sm space-y-3">
+                <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wide text-stone-500"><span>{record.customCollectionName || (record.collectionKey && FRAMEWORK_COLLECTION_LABELS[record.collectionKey] ? FRAMEWORK_COLLECTION_LABELS[record.collectionKey][language === 'ne' ? 0 : 1] : record.collectionKey) || (language === 'ne' ? 'साझा अनुसन्धान' : 'Shared research')}</span><span>·</span><span>{language === 'ne' ? 'प्रकाशित' : 'Published'}</span>{record.version ? <><span>·</span><span>v{record.version}</span></> : null}</div>
+                <h3 className="font-serif-np text-xl font-bold text-stone-900">{(language === 'ne' ? record.nepaliTitle : record.englishTitle) || record.title || record.topic || record.id}</h3>
+                {record.topic && <p className="text-sm font-semibold text-stone-700">{record.topic}</p>}
+                {((language === 'ne' ? record.nepaliResearchQuestion : record.englishResearchQuestion) || record.researchQuestion) && <div><h4 className="text-xs font-bold text-stone-800">{language === 'ne' ? 'अनुसन्धान प्रश्न' : 'Research question'}</h4><p className="mt-1 text-sm leading-6 text-stone-600 whitespace-pre-line">{(language === 'ne' ? record.nepaliResearchQuestion : record.englishResearchQuestion) || record.researchQuestion}</p></div>}
+                {((language === 'ne' ? record.nepaliSummary : record.englishSummary) || record.summary) && <p className="text-sm leading-6 text-stone-600 whitespace-pre-line">{(language === 'ne' ? record.nepaliSummary : record.englishSummary) || record.summary}</p>}
+                {(record.historicalPeriod || record.geography || record.researcher) && <div className="flex flex-wrap gap-2 text-xs text-stone-600">{record.historicalPeriod && <span className="rounded-full bg-stone-100 px-2.5 py-1">{record.historicalPeriod}</span>}{record.geography && <span className="rounded-full bg-stone-100 px-2.5 py-1">{record.geography}</span>}{record.researcher && <span className="rounded-full bg-stone-100 px-2.5 py-1">{record.researcher}</span>}</div>}
+                <details className="group rounded-xl border border-stone-200 bg-stone-50 p-3">
+                  <summary className="cursor-pointer text-sm font-semibold text-stone-800">{language === 'ne' ? 'पूरा अनुसन्धान, स्रोत र प्रमाण हेर्नुहोस्' : 'Read full research, sources and evidence'}</summary>
+                  <div className="mt-4 space-y-4">
+                    {record.methodology && <div><h4 className="text-xs font-bold">{language === 'ne' ? 'अनुसन्धान विधि' : 'Methodology'}</h4><p className="mt-1 whitespace-pre-line text-sm leading-6 text-stone-600">{record.methodology}</p></div>}
+                    {(record.sections || []).map(section => <div key={section.id}><h4 className="text-sm font-bold text-stone-900">{section.title}</h4><p className="mt-1 whitespace-pre-line text-sm leading-6 text-stone-700">{section.content || (language === 'ne' ? 'यस खण्डमा सामग्री थपिएको छैन।' : 'No content has been added to this section.')}</p></div>)}
+                    {([[ 'sourceProvenance', language === 'ne' ? 'स्रोतको उत्पत्ति' : 'Source provenance' ], ['primarySources', language === 'ne' ? 'प्राथमिक स्रोत' : 'Primary sources'], ['secondarySources', language === 'ne' ? 'द्वितीयक / विद्वत् स्रोत' : 'Secondary / scholarly sources'], ['exactReferences', language === 'ne' ? 'ठ्याक्कै सन्दर्भ' : 'Exact references'], ['oralHistoryNotes', language === 'ne' ? 'मौखिक इतिहास' : 'Oral history'], ['archaeologicalEvidence', language === 'ne' ? 'पुरातात्त्विक / भौतिक प्रमाण' : 'Archaeological / material evidence'], ['evidenceAssessment', language === 'ne' ? 'प्रमाण मूल्याङ्कन' : 'Evidence assessment'], ['counterEvidence', language === 'ne' ? 'विरोधी प्रमाण' : 'Counter-evidence'], ['alternativeInterpretations', language === 'ne' ? 'वैकल्पिक व्याख्या' : 'Alternative interpretations'], ['unresolvedQuestions', language === 'ne' ? 'अनसुल्झिएका प्रश्न' : 'Unresolved questions'], ['confidenceAssessment', language === 'ne' ? 'निश्चितता र सीमा' : 'Confidence and limitations'], ['reviewer', language === 'ne' ? 'समीक्षक' : 'Reviewer'], ['reviewNotes', language === 'ne' ? 'समीक्षा तथा Cross-check टिप्पणी' : 'Review and cross-check notes'], ['rightsAndPermissions', language === 'ne' ? 'अधिकार, अनुमति र गोपनीयता' : 'Rights, permissions and privacy'], ['linkedRecords', language === 'ne' ? 'सम्बन्धित अभिलेख' : 'Related records'], ['sources', language === 'ne' ? 'स्रोत सूची' : 'Sources'], ['conclusion', language === 'ne' ? 'निष्कर्ष' : 'Conclusion']] as const).map(([key, label]) => { const value = key === 'conclusion' ? ((language === 'ne' ? record.nepaliConclusion : record.englishConclusion) || record.conclusion) : record[key as keyof PublicFrameworkRecord]; return typeof value === 'string' && value.trim() ? <div key={key}><h4 className="text-xs font-bold text-stone-800">{label}</h4><p className="mt-1 whitespace-pre-line text-sm leading-6 text-stone-600">{value}</p></div> : null; })}
+                  </div>
+                </details>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Published Research Records from CMS */}
       {publishedRecords.length > 0 && (

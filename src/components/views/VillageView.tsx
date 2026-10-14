@@ -62,6 +62,7 @@ export const VillageView: React.FC = () => {
         <p className="text-stone-300 text-xs sm:text-sm leading-relaxed max-w-2xl font-sans">
           {language === 'ne' ? (section?.nepaliDescription || t.sections.villageSubtitle) : (section?.englishDescription || t.sections.villageSubtitle)}
         </p>
+        {(language === 'ne' ? section?.nepaliBody : section?.englishBody) && <p className="text-stone-200 text-sm leading-7 max-w-3xl whitespace-pre-line">{language === 'ne' ? section?.nepaliBody : section?.englishBody}</p>}
 
         <div className="pt-2 border-t border-stone-800 flex flex-wrap items-center justify-between gap-4 text-xs text-stone-400">
           <div className="flex items-center gap-2">

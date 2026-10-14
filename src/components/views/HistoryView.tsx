@@ -612,7 +612,7 @@ export const HistoryCollectionView: React.FC<{ slug: string }> = ({ slug }) => {
   const { language, navigateTo, getArchiveSection } = useArchive();
   const section = getArchiveSection('history_civilization');
   const collection = UNIVERSAL_HISTORY_COLLECTIONS.find(item => item.slug === slug);
-  const collectionContent = getArchiveSection(`history_collection_${slug}`);
+  const collectionContent = getArchiveSection(`history_collection_${slug.replace(/-/g, '_')}`);
   if (!collection) {
     navigateTo('/history');
     return null;
@@ -723,8 +723,8 @@ export const HistoryView: React.FC = () => {
             return (
               <button key={item.slug} onClick={() => navigateTo(`/history/${item.slug}`)} className="group text-left rounded-2xl border border-stone-200 bg-white p-5 hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md transition-all cursor-pointer">
                 <div className="flex items-start justify-between gap-4"><span className="rounded-xl bg-stone-100 p-2.5 text-stone-700 group-hover:bg-amber-50 group-hover:text-amber-900"><ItemIcon className="w-5 h-5" /></span><ArrowRight className="w-4 h-4 text-stone-400 group-hover:text-amber-800 mt-1" /></div>
-                <h3 className="font-serif-np text-lg font-bold text-stone-900 mt-4">{isNe ? (getArchiveSection(`history_collection_${item.slug}`)?.nepaliTitle || item.ne) : (getArchiveSection(`history_collection_${item.slug}`)?.englishTitle || item.en)}</h3>
-                <p className="text-xs text-stone-600 leading-relaxed mt-2">{isNe ? (getArchiveSection(`history_collection_${item.slug}`)?.nepaliDescription || item.descriptionNe) : (getArchiveSection(`history_collection_${item.slug}`)?.englishDescription || item.descriptionEn)}</p>
+                <h3 className="font-serif-np text-lg font-bold text-stone-900 mt-4">{isNe ? (getArchiveSection(`history_collection_${item.slug.replace(/-/g, '_')}`)?.nepaliTitle || item.ne) : (getArchiveSection(`history_collection_${item.slug.replace(/-/g, '_')}`)?.englishTitle || item.en)}</h3>
+                <p className="text-xs text-stone-600 leading-relaxed mt-2">{isNe ? (getArchiveSection(`history_collection_${item.slug.replace(/-/g, '_')}`)?.nepaliDescription || item.descriptionNe) : (getArchiveSection(`history_collection_${item.slug.replace(/-/g, '_')}`)?.englishDescription || item.descriptionEn)}</p>
               </button>
             );
           })}

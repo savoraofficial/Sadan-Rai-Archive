@@ -5,8 +5,9 @@ import { fetchResearchRecords } from '../../services/dbService';
 import { ResearchRecordItem } from '../../types';
 
 export const OriginalResearchView: React.FC = () => {
-  const { language, navigateTo } = useArchive();
+  const { language, navigateTo, getArchiveSection } = useArchive();
   const ne = language === 'ne';
+  const section = getArchiveSection('original_research');
   const [records, setRecords] = useState<ResearchRecordItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,11 +52,9 @@ export const OriginalResearchView: React.FC = () => {
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-amber-400/10 text-amber-300 border border-amber-300/20"><Sparkles size={21} /></span>
             <div>
               <p className="text-[10px] uppercase tracking-[0.24em] text-amber-300 font-mono">{ne ? 'सदन राई — मौलिक अनुसन्धान' : 'SADAN RAI — ORIGINAL RESEARCH'}</p>
-              <h1 className="mt-2 font-serif-np text-3xl sm:text-4xl font-bold">{ne ? 'नयाँ खोज तथा निरन्तर अनुसन्धान' : 'New Findings & Ongoing Research'}</h1>
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-300">
-                {ne
-                  ? 'विश्वभरका उपलब्ध स्रोत, अभिलेख र प्रमाणको अध्ययन, तुलनात्मक जाँच तथा क्षेत्रीय अनुसन्धानमार्फत इतिहास, सभ्यता र संस्कृतिसम्बन्धी नयाँ तथ्य तथा सम्भावित निष्कर्षहरूको खोजी भइरहेको छ।'
-                  : 'Historical, civilizational and cultural questions are being explored through documented sources, archival records, comparative checking and field research from across the archive.'}
+              <h1 className="mt-2 font-serif-np text-3xl sm:text-4xl font-bold">{ne ? (section?.nepaliTitle || 'नयाँ खोज तथा निरन्तर अनुसन्धान') : (section?.englishTitle || 'New Findings & Ongoing Research')}</h1>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-stone-300 whitespace-pre-line">
+                {ne ? (section?.nepaliBody || section?.nepaliDescription || 'विश्वभरका उपलब्ध स्रोत, अभिलेख र प्रमाणको अध्ययन, तुलनात्मक जाँच तथा क्षेत्रीय अनुसन्धानमार्फत इतिहास, सभ्यता र संस्कृतिसम्बन्धी नयाँ तथ्य तथा सम्भावित निष्कर्षहरूको खोजी भइरहेको छ।') : (section?.englishBody || section?.englishDescription || 'Historical, civilizational and cultural questions are being explored through documented sources, archival records, comparative checking and field research from across the archive.')}
               </p>
             </div>
           </div>

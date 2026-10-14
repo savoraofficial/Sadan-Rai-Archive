@@ -27,7 +27,7 @@ const REVISIONS_COLLECTION = 'revisions';
 const ORAL_HISTORY_COLLECTION = 'oral_history_records';
 
 export function isUserAdmin(): boolean {
-  return auth.currentUser?.email === ADMIN_EMAIL;
+  return auth.currentUser?.email?.trim().toLowerCase() === ADMIN_EMAIL;
 }
 
 function assertAdmin(): void {
@@ -230,9 +230,14 @@ export async function fetchRevisions(): Promise<RevisionItem[]> {
 export async function fetchArchiveCollection<T>(collectionName: string): Promise<T[]> {
   try {
     const ref = collection(db, collectionName);
-    const q = collectionName === 'articles' && !isUserAdmin()
+    // Firestore security rules are not query filters. Public archive-content reads
+    // must explicitly constrain the query to published records or visitors receive
+    // a permission-denied error for the whole collection.
+    const q = !isUserAdmin() && collectionName === 'articles'
       ? query(ref, where('published', '==', true))
-      : query(ref);
+      : !isUserAdmin() && collectionName === 'archive_content'
+        ? query(ref, where('workflowStatus', '==', 'published'))
+        : query(ref);
     const snapshot = await getDocs(q);
     return snapshot.docs.map((item) => ({ id: item.id, ...item.data() } as T));
   } catch (error) {

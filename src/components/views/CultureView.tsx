@@ -26,6 +26,7 @@ export const CultureView: React.FC = () => {
         <p className="text-stone-600 text-sm max-w-3xl leading-relaxed font-sans">
           {language === 'ne' ? (section?.nepaliDescription || t.sections.cultureSubtitle) : (section?.englishDescription || t.sections.cultureSubtitle)}
         </p>
+        {(language === 'ne' ? section?.nepaliBody : section?.englishBody) && <p className="text-sm text-stone-700 max-w-4xl leading-7 whitespace-pre-line">{language === 'ne' ? section?.nepaliBody : section?.englishBody}</p>}
       </div>
 
       {cultureArticles.length > 0 ? (

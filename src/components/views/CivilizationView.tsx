@@ -27,6 +27,7 @@ export const CivilizationView: React.FC = () => {
         <p className="text-stone-600 text-sm max-w-3xl leading-relaxed font-sans">
           {language === 'ne' ? (section?.nepaliDescription || t.sections.civilizationSubtitle) : (section?.englishDescription || t.sections.civilizationSubtitle)}
         </p>
+        {(language === 'ne' ? section?.nepaliBody : section?.englishBody) && <p className="text-sm text-stone-700 max-w-4xl leading-7 whitespace-pre-line">{language === 'ne' ? section?.nepaliBody : section?.englishBody}</p>}
       </div>
 
       <section className="space-y-5" aria-labelledby="civilization-index">

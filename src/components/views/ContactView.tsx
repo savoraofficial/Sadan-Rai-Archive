@@ -43,7 +43,8 @@ export const ContactView: React.FC = () => {
         <div className="bg-stone-950 text-white p-7 sm:p-9">
           <div className="flex items-center gap-2 text-amber-400"><MessageCircle size={20}/><span className="text-[11px] tracking-[0.2em] uppercase font-mono">{ne ? 'सम्पर्क' : 'CONTACT'}</span></div>
           <h1 className="font-serif-np text-3xl sm:text-4xl font-bold mt-3">{ne ? (section?.nepaliTitle || 'सहयोगका लागि सम्पर्क गर्नुहोस्') : (section?.englishTitle || 'Contact the Archive')}</h1>
-          <p className="text-sm text-stone-300 mt-3 leading-relaxed">{ne ? 'तपाईंको सन्देश यही chat box बाट पठाउनुहोस्।' : 'Send your message directly through this secure contact box.'}</p>
+          <p className="text-sm text-stone-300 mt-3 leading-relaxed">{ne ? (section?.nepaliDescription || 'तपाईंको सन्देश यही chat box बाट पठाउनुहोस्।') : (section?.englishDescription || 'Send your message directly through this secure contact box.')}</p>
+          {(ne ? section?.nepaliBody : section?.englishBody) && <p className="text-sm text-stone-300 mt-3 leading-relaxed whitespace-pre-line">{ne ? section?.nepaliBody : section?.englishBody}</p>}
         </div>
         <form onSubmit={submit} className="p-6 sm:p-9 space-y-4">
           <input value={name} onChange={e => setName(e.target.value)} maxLength={100} placeholder={ne ? 'नाम (ऐच्छिक)' : 'Name (optional)'} className="w-full rounded-xl border border-stone-300 px-4 py-3 text-sm" />
